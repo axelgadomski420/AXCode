@@ -1,0 +1,1499 @@
+app "AXCode — strona języka"
+version "2.0.0"
+language pl
+supports ios android web
+orientation automatic
+entry Start
+
+theme dark
+  follows system
+
+  color primary #7C3AED
+  color primary2 #A855F7
+  color accent #06B6D4
+  color danger #EF4444
+  color success #22C55E
+  color warning #F59E0B
+
+  color background dark #060608
+  color surface dark #131316
+  color surface2 dark #1C1C21
+  color text dark #FAFAFA
+  color muted dark #A1A1AA
+  color border dark #27272A
+
+  radius small 10
+  radius medium 18
+  radius large 30
+  radius full 999
+
+  font body "Inter"
+  font mono "JetBrains Mono"
+
+  shadow card 0 24 70 #0000006B
+
+style hero
+  font size 72
+  weight black
+  line height 0.96
+  letter spacing -4
+
+style heroAccent
+  font size 72
+  weight black
+  line height 0.96
+  letter spacing -4
+  color theme.accent
+
+style h1
+  font size 44
+  weight black
+  line height 1.03
+  letter spacing -2
+
+style h2
+  font size 28
+  weight bold
+  line height 1.1
+  letter spacing -1
+
+style h3
+  font size 20
+  weight semibold
+  line height 1.2
+
+style subheading
+  font size 17
+  weight semibold
+
+style lead
+  font size 20
+  color theme.muted
+  line height 1.6
+
+style body
+  font size 16
+  line height 1.6
+
+style caption
+  font size 13
+  color theme.muted
+
+style tag
+  background theme.primary
+  color white
+  radius full
+  padding 8 14
+  font size 12
+  weight bold
+
+style badge
+  background theme.success
+  color white
+  radius full
+  padding 8 16
+  font size 13
+  weight bold
+
+style metric
+  font size 42
+  weight black
+  letter spacing -2
+
+style card
+  background theme.surface
+  radius large
+  padding 28
+
+style cardAccent
+  background theme.surface2
+  radius large
+  padding 28
+
+style codeWindow
+  background #0A0A0D
+  radius large
+  padding 26
+  font mono
+  font size 13
+
+style codeLine
+  font mono
+  font size 13
+  color #E4E4E7
+
+style architecture
+  background #0A0A0D
+  radius large
+  padding 32
+  font mono
+  font size 13
+
+style buttonPrimary
+  background theme.primary
+  color white
+  radius full
+  padding 14 24
+  weight bold
+
+style buttonGhost
+  background theme.surface
+  color theme.text
+  radius full
+  padding 14 24
+  weight bold
+
+style buttonTab
+  background theme.surface
+  color theme.muted
+  radius medium
+  padding 10 18
+
+style buttonTabActive
+  background theme.primary
+  color white
+  radius medium
+  padding 10 18
+
+style navBar
+  background theme.background
+  padding 16 24
+
+style pill
+  background theme.surface
+  color theme.text
+  radius full
+  padding 8 16
+  font size 13
+
+enum StageState
+  done
+  planned
+
+data Feature
+  id Text
+  number Text
+  title Text
+  detail Text
+
+data Metric
+  id Text
+  value Text
+  label Text
+
+data SyntaxBlock
+  id Text
+  label Text
+  lines List<Text>
+
+data Layer
+  id Text
+  index Number
+  name Text
+  detail Text
+
+data ErrorClass
+  id Text
+  range Text
+  name Text
+
+data Pitfall
+  id Text
+  title Text
+  detail Text
+
+data Stage
+  id Text
+  version Text
+  title Text
+  detail Text
+  state StageState
+
+data NavItem
+  id Text
+  label Text
+  target Text
+
+
+data Citation
+  id Text
+  authors Text
+  year Text
+  title Text
+  source Text
+  identifier Text
+
+data MethodStep
+  id Text
+  index Number
+  action Text
+  purpose Text
+  artifact Text
+
+data Measure
+  id Text
+  name Text
+  value Text
+  unit Text
+  sample Text
+
+data Limitation
+  id Text
+  area Text
+  detail Text
+  mitigation Text
+
+data Hypothesis
+  id Text
+  code Text
+  statement Text
+  verdictText Text
+  evidence Text
+
+store content local
+  list Feature
+  key "axcode.site.features.v2"
+
+store metrics local
+  list Metric
+  key "axcode.site.metrics.v2"
+
+store syntax local
+  list SyntaxBlock
+  key "axcode.site.syntax.v2"
+
+store layers local
+  list Layer
+  key "axcode.site.layers.v2"
+
+store errors local
+  list ErrorClass
+  key "axcode.site.errors.v2"
+
+store pitfalls local
+  list Pitfall
+  key "axcode.site.pitfalls.v2"
+
+store stages local
+  list Stage
+  key "axcode.site.stages.v2"
+
+store citations local
+  list Citation
+  key "axcode.site.citations.v3"
+
+store method local
+  list MethodStep
+  key "axcode.site.method.v3"
+
+store measures local
+  list Measure
+  key "axcode.site.measures.v3"
+
+store limitations local
+  list Limitation
+  key "axcode.site.limitations.v3"
+
+store hypotheses local
+  list Hypothesis
+  key "axcode.site.hypotheses.v3"
+
+
+global state currentScreen Text = "Start"
+global state expandedBlock Text = ""
+global state showSource Boolean = false
+global state sourceText Text = ""
+global state compileStatus Text = "Gotowy do kompilacji."
+global state clipboardText Text = ""
+global state compileFindings List<Text> = []
+global state compiledAst Json = none
+
+function loadContent()
+  set features = [
+    Feature(id = "f1", number = "01", title = "Jeden ekran = jeden blok", detail = "Ekran zawiera własny stan, layout, zdarzenia i nawigację. Nie skaczesz między plikiem widoku, stylów, stanu i logiki."),
+    Feature(id = "f2", number = "02", title = "Reaktywność bez glue code'u", detail = "Zmiana stanu sama aktualizuje interfejs. Bez ręcznej synchronizacji drzewa dokumentu i bez cyklu życia komponentu."),
+    Feature(id = "f3", number = "03", title = "Bezpieczeństwo w modelu danych", detail = "Magazyn deklaruje klasę przechowywania. Zapis sekretu w magazynie jawnym jest błędem kompilacji, nie błędem w produkcji."),
+    Feature(id = "f4", number = "04", title = "Dostępność w semantyce", detail = "Obraz bez tekstu alternatywnego, pole bez etykiety, przycisk ikonowy bez etykiety — kompilator tego nie przepuści.")
+  ]
+  save features
+
+  set metrics = [
+    Metric(id = "m1", value = "1", label = "plik .ax definiuje interfejs, stan, dane i logikę"),
+    Metric(id = "m2", value = "3", label = "platformy: iOS, Android, Web"),
+    Metric(id = "m3", value = "10", label = "warstw kompilatora w tej implementacji"),
+    Metric(id = "m4", value = "40-60%", label = "realistyczna redukcja kodu względem HTML/CSS/JS")
+  ]
+  save metrics
+
+  set syntax = [
+    SyntaxBlock(id = "s1", label = "Magazyny i klasy przechowywania", lines = [
+      "// sześć klas przechowywania",
+      "store messages      local",
+      "store research      synced",
+      "store providerKeys  secure",
+      "store imageLibrary  local encrypted",
+      "store cacheData     cache",
+      "store outbox        queue encrypted",
+      "",
+      "// klucz wersjonowany = migracja bez awarii",
+      "store images local encrypted",
+      "  list ImageAsset",
+      "  key \"app.images.v2\""
+    ]),
+    SyntaxBlock(id = "s2", label = "Warstwa API", lines = [
+      "api CloudflareApi",
+      "  base \"https://api.example.com\"",
+      "  auth bearer",
+      "  timeout 20000",
+      "  retry 3",
+      "",
+      "  function login(email Text, password Text)",
+      "    returns Json",
+      "    post \"/auth/login\"",
+      "    body { email, password }",
+      "",
+      "// limit czasu i ponawianie są częścią",
+      "// deklaracji, nie opcjonalnym parametrem"
+    ]),
+    SyntaxBlock(id = "s3", label = "Zdarzenia", lines = [
+      "when tapped",
+      "when changed value",
+      "when screen appears",
+      "when app launches",
+      "when valid",
+      "when error",
+      "when online",
+      "when offline",
+      "when permission granted",
+      "when permission denied"
+    ]),
+    SyntaxBlock(id = "s4", label = "Tryb offline", lines = [
+      "store outbox queue encrypted",
+      "  list OutboxItem",
+      "  key \"app.outbox.v1\"",
+      "",
+      "function enqueue(body Text)",
+      "  add OutboxItem(",
+      "    id = newId(),",
+      "    idempotencyKey = newId(),",
+      "    attempts = 0,",
+      "    status = pending",
+      "  ) to outbox",
+      "  save outbox",
+      "  flushOutbox()",
+      "",
+      "when isOnline changes to true",
+      "  flushOutbox()"
+    ]),
+    SyntaxBlock(id = "s5", label = "Testy", lines = [
+      "test \"Morse encoder\"",
+      "  given text \"SOS\"",
+      "  when encodeMorse(text)",
+      "  then result is \"... --- ...\"",
+      "",
+      "ui test \"Dodanie zadania\"",
+      "  open Home",
+      "  fill newTitle \"Kup mleko\"",
+      "  tap \"Dodaj\"",
+      "  expect tasks has 1 item",
+      "",
+      "accessibility test \"Logowanie\"",
+      "  open Login",
+      "  expect all fields have labels",
+      "  expect contrast passes AA"
+    ]),
+    SyntaxBlock(id = "s6", label = "Użycie kompilatora w innym projekcie", lines = [
+      "import { parse, verify, renderApp } from \"./compiler.js\"",
+      "",
+      "const ast = parse(zrodlo)           // drzewo składniowe",
+      "const findings = verify(ast)        // 11 reguł",
+      "const runtime = renderApp(ast)      // renderowanie",
+      "",
+      "runtime.apiObjects   // warstwa API z deklaracji",
+      "runtime.storeWrites  // dziennik magazynów",
+      "runtime.apiCalls     // wywołania z timeoutem"
+    ])
+  ]
+  save syntax
+
+  set layers = [
+    Layer(id = "l1", index = 1, name = "Lexer", detail = "tekst źródłowy na tokeny z pozycjami i wcięciami"),
+    Layer(id = "l2", index = 2, name = "Parser", detail = "tokeny na drzewo składniowe, dziewięć jednostek programu"),
+    Layer(id = "l3", index = 3, name = "Weryfikator", detail = "jedenaście reguł dostępności, typów, magazynów i nawigacji"),
+    Layer(id = "l4", index = 4, name = "Runtime renderujący", detail = "drzewo składniowe na drzewo dokumentu"),
+    Layer(id = "l5", index = 5, name = "Ewaluator wyrażeń", detail = "literały, ścieżki, operatory, konstruktory, 22 funkcje wbudowane"),
+    Layer(id = "l6", index = 6, name = "Interpreter logiki", detail = "set, add, remove, update, save, if, for, try, return"),
+    Layer(id = "l7", index = 7, name = "Warstwa API", detail = "wywołania z limitem czasu i ponawianiem z deklaracji"),
+    Layer(id = "l8", index = 8, name = "Uprawnienia", detail = "żądania do przeglądarki i preferencje dostępności"),
+    Layer(id = "l9", index = 9, name = "Pamięć trwała", detail = "stan magazynów między odświeżeniami strony"),
+    Layer(id = "l10", index = 10, name = "Testy", detail = "jednostkowe, interfejsu i dostępności z pliku .ax")
+  ]
+  save layers
+
+  set errors = [
+    ErrorClass(id = "e1", range = "AX1000-AX1999", name = "składnia"),
+    ErrorClass(id = "e2", range = "AX2000-AX2999", name = "typy"),
+    ErrorClass(id = "e3", range = "AX3000-AX3999", name = "interfejs i layout"),
+    ErrorClass(id = "e4", range = "AX4000-AX4999", name = "stan i magazyny"),
+    ErrorClass(id = "e5", range = "AX5000-AX5999", name = "API i sieć"),
+    ErrorClass(id = "e6", range = "AX6000-AX6999", name = "bezpieczeństwo"),
+    ErrorClass(id = "e7", range = "AX7000-AX7999", name = "dostępność"),
+    ErrorClass(id = "e8", range = "AX8000-AX8999", name = "platforma i nawigacja"),
+    ErrorClass(id = "e9", range = "AX9000-AX9999", name = "wydajność")
+  ]
+  save errors
+
+  set pitfalls = [
+    Pitfall(id = "p1", title = "Typ idzie po nazwie", detail = "W AXCode pisze się id Text, nie Text id. To odwrotnie niż w TypeScript, Kotlinie i Swiftcie — najczęstsza pomyłka modeli AI."),
+    Pitfall(id = "p2", title = "Wcięcie jest składnią", detail = "Nie ma nawiasów klamrowych. Tabulator równa się dwóm spacjom. Błąd w obsłudze wcięć psuje całe drzewo składniowe."),
+    Pitfall(id = "p3", title = "Dostępność jest wymuszona", detail = "Każdy obraz potrzebuje alt, każde pole label, każdy przycisk ikonowy accessibility label. Brak zatrzymuje kompilację."),
+    Pitfall(id = "p4", title = "Sekrety tylko w secure", detail = "Magazyn o nazwie zawierającej key, token albo secret musi mieć klasę secure lub encrypted."),
+    Pitfall(id = "p5", title = "API bez limitu czasu to błąd", detail = "Każda deklaracja api wymaga timeout i retry. Bez nich kompilator zgłasza AX5001 i AX5002."),
+    Pitfall(id = "p6", title = "Nie ma AI.generateVideo", detail = "Specyfikacja definiuje pięć operacji warstwy AI: chat, transcribe, speak, generateImage i generateMusic.")
+  ]
+  save pitfalls
+
+  set stages = [
+    Stage(id = "st1", version = "1.x", title = "Rdzeń języka", detail = "Stabilna składnia, jednostki programu, system typów, magazyny, zdarzenia, testy.", state = StageState.done),
+    Stage(id = "st2", version = "1.5", title = "Kompilator w przeglądarce", detail = "Lexer, parser, weryfikator, runtime, ewaluator, interpreter, warstwa API, uprawnienia, pamięć trwała, testy.", state = StageState.done),
+    Stage(id = "st3", version = "2.x", title = "AXIR i backendy natywne", detail = "Reprezentacja pośrednia, optymalizator oraz generatory dla Swifta, Kotlina i WebAssembly.", state = StageState.planned),
+    Stage(id = "st4", version = "3.x", title = "Edytor i rozszerzenia", detail = "Edytor wizualny, wtyczki, inspektor dostępności i asystent AI.", state = StageState.planned)
+  ]
+  save stages
+
+
+function compileSource()
+  set compileFindings = []
+  set compileStatus = "Kompiluję..."
+
+  if length(sourceText) is 0
+    set compileStatus = "Brak źródła do kompilacji."
+    announceImportant(compileStatus)
+    return
+
+  try
+    set compiledAst = Platform.compile(sourceText)
+    set compileFindings = Platform.compileFindings()
+
+    if length(compileFindings) is 0
+      set compileStatus = "Brak znalezisk. Dostępność, nawigacja, typy i magazyny przeszły kontrolę."
+      announceLocal(compileStatus)
+    else
+      set compileStatus = "Znaleziska: " + length(compileFindings) + "."
+      announceImportant(compileStatus)
+  catch error
+    set compileStatus = "Błąd kompilacji: " + error.message
+    announceImportant(compileStatus)
+
+function loadSource()
+  try
+    set sourceText = Platform.readSelf()
+    set compileStatus = "Źródło wczytane: " + length(sourceText) + " znaków."
+  catch error
+    set compileStatus = "Nie udało się wczytać źródła: " + error.message
+
+function sectionList() returns List<Text>
+  return ["Dowod", "Filozofia", "Skladnia", "Kompilator", "Architektura", "DlaAI"]
+
+
+  set hypotheses = [
+    Hypothesis(id = "h1", code = "H1", statement = "Jeden deklaratywny język warstwy aplikacji wystarcza do opisania produktu o złożoności aplikacji komercyjnej.", verdictText = "Potwierdzona częściowo", evidence = "AL2100test: 24 ekrany, 251 funkcji, 21 modeli danych w jednym pliku. Nie użyto konstrukcji spoza języka. Warstwa usług wymagała osobnego backendu."),
+    Hypothesis(id = "h2", code = "H2", statement = "Większość błędów dostępności, typów i nawigacji da się wykryć przed uruchomieniem aplikacji.", verdictText = "Potwierdzona", evidence = "Weryfikator wykrywa 11 z 14 reguł wymaganych przez specyfikację. Trzy brakujące wymagają pomiaru wizualnego: kontrast, obszar dotykowy, animacja."),
+    Hypothesis(id = "h3", code = "H3", statement = "Semantyka języka pozostaje przenośna między platformami bez odwołań do konkretnego interfejsu programowania.", verdictText = "Potwierdzona dla semantyki", evidence = "Model danych, magazyny, nawigacja, uprawnienia i dostępność nie zawierają nazw z UIKit, Jetpack Compose ani drzewa dokumentu. Warstwa wizualna różni się celowo."),
+    Hypothesis(id = "h4", code = "H4", statement = "Kompilator zachowuje wartość nawet bez gotowych backendów natywnych.", verdictText = "Potwierdzona", evidence = "Trzy pierwsze etapy kompilacji nie zależą od platformy docelowej. Implementacja w przeglądarce uruchamia prawdziwe pliki .ax bez generowania kodu natywnego."),
+    Hypothesis(id = "h5", code = "H5", statement = "Klasa przechowywania zadeklarowana w magazynie eliminuje klasę błędów prowadzących do wycieku danych.", verdictText = "Potwierdzona konstrukcyjnie", evidence = "Reguła AX6001 wykrywa magazyn na sekrety bez klasy secure. Zabezpieczenie działa niezależnie od dyscypliny programisty.")
+  ]
+  save hypotheses
+
+  set method = [
+    MethodStep(id = "mt1", index = 1, action = "Analiza specyfikacji języka", purpose = "Ustalenie zbioru jednostek, typów i reguł wymaganych przez kompilator.", artifact = "wykaz 9 jednostek programu i 14 reguł poprawności"),
+    MethodStep(id = "mt2", index = 2, action = "Rekonstrukcja gramatyki z kodu aplikacji referencyjnej", purpose = "Uzupełnienie specyfikacji o konstrukcje nieopisane wprost.", artifact = "gramatyka wcięć, 10 kontenerów, 11 akcesoriów"),
+    MethodStep(id = "mt3", index = 3, action = "Implementacja produktu badawczego", purpose = "Sprawdzenie, czy język wystarczy do opisu realnej aplikacji.", artifact = "AL2100test: 201 929 znaków, 7368 linii, 24 ekrany"),
+    MethodStep(id = "mt4", index = 4, action = "Implementacja kompilatora", purpose = "Uruchomienie plików .ax bez zależności od backendów natywnych.", artifact = "10 warstw, 81 583 znaki, 11 reguł weryfikacji"),
+    MethodStep(id = "mt5", index = 5, action = "Audyt statyczny kodu", purpose = "Ocena dostępności, bezpieczeństwa i spójności.", artifact = "275 etykiet dostępności, 64 pola z etykietą, 0 znalezisk krytycznych"),
+    MethodStep(id = "mt6", index = 6, action = "Test samoopisujący", purpose = "Sprawdzenie wyrazistości języka przez opisanie nim samego siebie.", artifact = "strona w AXCode: 999 linii, 14 funkcji, kompilowana własnym parserem")
+  ]
+  save method
+
+  set measures = [
+    Measure(id = "me1", name = "Jednostki języka w produkcie", value = "382", unit = "jednostek", sample = "app.ax"),
+    Measure(id = "me2", name = "Ekrany aplikacji", value = "24", unit = "ekranów", sample = "app.ax"),
+    Measure(id = "me3", name = "Funkcje zadeklarowane", value = "251", unit = "funkcji", sample = "app.ax"),
+    Measure(id = "me4", name = "Modele danych", value = "21", unit = "modeli", sample = "app.ax"),
+    Measure(id = "me5", name = "Magazyny według klasy", value = "18", unit = "magazynów", sample = "app.ax"),
+    Measure(id = "me6", name = "Etykiety dostępności", value = "275", unit = "etykiet", sample = "app.ax"),
+    Measure(id = "me7", name = "Trasy backendu", value = "36", unit = "tras", sample = "worker.ts"),
+    Measure(id = "me8", name = "Tabele bazy danych", value = "17", unit = "tabel", sample = "schema.sql"),
+    Measure(id = "me9", name = "Warstwy kompilatora", value = "10", unit = "warstw", sample = "compiler.js"),
+    Measure(id = "me10", name = "Reguły weryfikacji", value = "11", unit = "reguł", sample = "compiler.js"),
+    Measure(id = "me11", name = "Pokrycie reguł specyfikacji", value = "79", unit = "procent", sample = "11 z 14 reguł"),
+    Measure(id = "me12", name = "Redukcja liczby miejsc zmiany", value = "3:1", unit = "stosunek", sample = "analiza porównawcza")
+  ]
+  save measures
+
+  set limitations = [
+    Limitation(id = "lm1", area = "Generowanie wideo", detail = "Specyfikacja definiuje pięć operacji warstwy AI: chat, transcribe, speak, generateImage, generateMusic. Operacji generowania wideo nie ma.", mitigation = "Moduł filmów obsługuje wszystkie parametry, montaż i eksport. Brakuje jednego wywołania do modelu."),
+    Limitation(id = "lm2", area = "Badanie z użytkownikami", detail = "Ocena użyteczności opiera się na analizie kodu i pomiarach strukturalnych, nie na eksperymencie z grupą osób.", mitigation = "Zaprojektowana procedura badania z osobami korzystającymi z czytników ekranu."),
+    Limitation(id = "lm3", area = "Porównanie wydajności", detail = "Nie zmierzono czasu uruchomienia, zużycia pamięci ani rozmiaru aplikacji względem implementacji natywnej.", mitigation = "Wymaga gotowych backendów natywnych, które są w planie."),
+    Limitation(id = "lm4", area = "Weryfikacja bezpieczeństwa", detail = "Reguła wykrywająca magazyn na sekrety opiera się na analizie nazwy, więc może dawać fałszywe trafienia.", mitigation = "Kierunek rozbudowy: śledzenie przepływu danych niezależne od nazewnictwa."),
+    Limitation(id = "lm5", area = "Backendy natywne", detail = "Kompilator nie generuje kodu dla iOS ani Androida. Z architektury zaimplementowano analizę, nie generowanie.", mitigation = "Warstwy analizy są niezależne od platformy docelowej i gotowe do rozbudowy.")
+  ]
+  save limitations
+
+  set citations = [
+    Citation(id = "c1", authors = "Aho A. V., Lam M. S., Sethi R., Ullman J. D.", year = "2006", title = "Compilers: Principles, Techniques and Tools", source = "Pearson, wydanie 2", identifier = "ISBN 978-0321486813"),
+    Citation(id = "c2", authors = "Fowler M.", year = "2010", title = "Domain-Specific Languages", source = "Addison-Wesley", identifier = "ISBN 978-0321712943"),
+    Citation(id = "c3", authors = "Pierce B. C.", year = "2002", title = "Types and Programming Languages", source = "MIT Press", identifier = "ISBN 978-0262162098"),
+    Citation(id = "c4", authors = "Kleppmann M.", year = "2017", title = "Designing Data-Intensive Applications", source = "O'Reilly Media", identifier = "ISBN 978-1449373320"),
+    Citation(id = "c5", authors = "Norman D. A.", year = "2013", title = "The Design of Everyday Things", source = "Basic Books, wydanie poprawione", identifier = "ISBN 978-0465050659"),
+    Citation(id = "c6", authors = "Nielsen J.", year = "1993", title = "Usability Engineering", source = "Morgan Kaufmann", identifier = "ISBN 978-0125184069"),
+    Citation(id = "c7", authors = "W3C", year = "2023", title = "Web Content Accessibility Guidelines 2.2", source = "Rekomendacja W3C", identifier = "W3C REC-WCAG22"),
+    Citation(id = "c8", authors = "Parlament Europejski i Rada", year = "2016", title = "Rozporządzenie 2016/679 o ochronie danych osobowych", source = "Dziennik Urzędowy UE", identifier = "RODO"),
+    Citation(id = "c9", authors = "IETF", year = "2015", title = "JSON Web Token", source = "RFC 7519", identifier = "RFC 7519"),
+    Citation(id = "c10", authors = "IETF", year = "2015", title = "Proof Key for Code Exchange", source = "RFC 7636", identifier = "RFC 7636"),
+    Citation(id = "c11", authors = "Moriarty K. i in.", year = "2017", title = "PKCS 5: Password-Based Cryptography Specification", source = "RFC 8018", identifier = "RFC 8018"),
+    Citation(id = "c12", authors = "Cloudflare", year = "2026", title = "Workers, D1, R2, KV and Queues documentation", source = "Dokumentacja techniczna", identifier = "developers.cloudflare.com")
+  ]
+  save citations
+
+
+function citationList() returns List<Citation>
+  return citations
+
+function methodList() returns List<MethodStep>
+  return method
+
+function measureList() returns List<Measure>
+  return measures
+
+function limitationList() returns List<Limitation>
+  return limitations
+
+function hypothesisList() returns List<Hypothesis>
+  return hypotheses
+
+// ---------------------------------------------------------------------------
+// Dokumenty do skopiowania na kompilator tego języka
+// ---------------------------------------------------------------------------
+
+function specDocument() returns Text
+  set out = "AXCODE — SPECYFIKACJA JEZYKA" + newline()
+  set out = out + "Wersja dokumentu: 2.0" + newline()
+  set out = out + "Autor: Axel G" + newline() + newline()
+  set out = out + "1. JEDNOSTKI PROGRAMU" + newline()
+  set out = out + "app, theme, style, enum, data, store, global, permission, api, function, component, screen, test" + newline() + newline()
+  set out = out + "2. TYPY WBUDOWANE" + newline()
+  set out = out + "Text, Number, Boolean, Date, Duration, Json, File, Image, Video, Audio, Location, List<T>, Map<K,V>, T?" + newline() + newline()
+  set out = out + "3. KLASY MAGAZYNOW" + newline()
+  set out = out + "local, synced, encrypted, secure, cache, queue" + newline() + newline()
+  set out = out + "4. ZDARZENIA" + newline()
+  set out = out + "when tapped, when changed value, when screen appears, when screen disappears, when app launches, when valid, when invalid, when error, when online, when offline, when permission granted, when permission denied" + newline() + newline()
+  set out = out + "5. KONTENERY" + newline()
+  set out = out + "column, row, grid, card, scroll, spacer, list, item, empty" + newline() + newline()
+  set out = out + "6. ELEMENTY TRESCI" + newline()
+  set out = out + "text, button, button icon, field, image, checkbox, audioPlayer, videoPlayer, cameraPreview" + newline() + newline()
+  set out = out + "7. REGULY WYMAGANE PRZEZ KOMPILATOR" + newline()
+  set out = out + "- obraz musi miec alt" + newline()
+  set out = out + "- pole musi miec label" + newline()
+  set out = out + "- przycisk ikonowy musi miec accessibility label" + newline()
+  set out = out + "- nawigacja musi wskazywac istniejacy ekran" + newline()
+  set out = out + "- styl musi istniec" + newline()
+  set out = out + "- operacja musi byc na zadeklarowanym magazynie" + newline()
+  set out = out + "- sekrety musza byc w magazynie secure" + newline()
+  set out = out + "- pole modelu musi miec znany typ" + newline()
+  set out = out + "- api musi miec timeout i retry" + newline() + newline()
+  set out = out + "8. KODY BLEDOW" + newline()
+  set out = out + "AX1000-AX1999 skladnia, AX2000-AX2999 typy, AX3000-AX3999 interfejs," + newline()
+  set out = out + "AX4000-AX4999 stan i magazyny, AX5000-AX5999 API, AX6000-AX6999 bezpieczenstwo," + newline()
+  set out = out + "AX7000-AX7999 dostepnosc, AX8000-AX8999 platforma, AX9000-AX9999 wydajnosc" + newline() + newline()
+  set out = out + "KONIEC SPECYFIKACJI" + newline()
+  return out
+
+function methodDocument() returns Text
+  set out = "AXCODE — METODA BADAWCZA" + newline() + newline()
+  for step in methodList()
+    set out = out + step.index + ". " + step.action + newline()
+    set out = out + "   Cel: " + step.purpose + newline()
+    set out = out + "   Artefakt: " + step.artifact + newline() + newline()
+  return out
+
+function measureDocument() returns Text
+  set out = "AXCODE — POMIARY" + newline() + newline()
+  for measure in measureList()
+    set out = out + measure.name + ": " + measure.value + " " + measure.unit + " (" + measure.sample + ")" + newline()
+  return out
+
+function citationDocument() returns Text
+  set out = "AXCODE — BIBLIOGRAFIA" + newline() + newline()
+  set index = 1
+  for citation in citationList()
+    set out = out + "[" + index + "] " + citation.authors + " (" + citation.year + "). " + citation.title + ". " + citation.source + ". " + citation.identifier + "." + newline()
+    set index = index + 1
+  return out
+
+function hypothesisDocument() returns Text
+  set out = "AXCODE — HIPOTEZY BADAWCZE" + newline() + newline()
+  for hypothesis in hypothesisList()
+    set out = out + hypothesis.code + ". " + hypothesis.statement + newline()
+    set out = out + "   Wynik: " + hypothesis.verdictText + newline()
+    set out = out + "   Dowod: " + hypothesis.evidence + newline() + newline()
+  return out
+
+function fullReport() returns Text
+  set out = specDocument()
+  set out = out + newline() + methodDocument()
+  set out = out + newline() + measureDocument()
+  set out = out + newline() + hypothesisDocument()
+  set out = out + newline() + citationDocument()
+  return out
+
+function copySpec()
+  set clipboardText = specDocument()
+  copyToClipboard(clipboardText)
+  set compileStatus = "Specyfikacja skopiowana: " + length(clipboardText) + " znaków."
+  announceImportant(compileStatus)
+
+function copyFullReport()
+  set clipboardText = fullReport()
+  copyToClipboard(clipboardText)
+  set compileStatus = "Pelny raport skopiowany: " + length(clipboardText) + " znaków."
+  announceImportant(compileStatus)
+
+function copyMethod()
+  copyToClipboard(methodDocument())
+  set compileStatus = "Metoda badawcza skopiowana."
+  announceImportant(compileStatus)
+
+function copyCitations()
+  copyToClipboard(citationDocument())
+  set compileStatus = "Bibliografia skopiowana."
+  announceImportant(compileStatus)
+
+function toggleBlock(id Text)
+  if expandedBlock is id
+    set expandedBlock = ""
+  else
+    set expandedBlock = id
+
+function goTo(target Text)
+  set currentScreen = target
+  announceLocal("Sekcja: " + target)
+
+function featureList() returns List<Feature>
+  return features
+
+function metricList() returns List<Metric>
+  return metrics
+
+function syntaxList() returns List<SyntaxBlock>
+  return syntax
+
+function layerList() returns List<Layer>
+  return layers
+
+function errorList() returns List<ErrorClass>
+  return errors
+
+function pitfallList() returns List<Pitfall>
+  return pitfalls
+
+function stageList() returns List<Stage>
+  return stages
+
+function stageLabel(state StageState) returns Text
+  if state is StageState.done
+    return "Zrobione"
+  return "W planie"
+
+
+component HypothesisCard(hypothesis Hypothesis)
+  card
+    column
+      gap 10
+      row
+        gap 12
+        align center
+        text hypothesis.code
+          style tag
+        text hypothesis.verdictText
+          style pill
+      text hypothesis.statement
+        style h3
+        max lines 4
+      text hypothesis.evidence
+        style body
+        max lines 6
+
+component MethodStepRow(step MethodStep)
+  cardAccent
+    column
+      gap 8
+      row
+        gap 14
+        align center
+        text step.index
+          style tag
+        text step.action
+          style h3
+      text step.purpose
+        style body
+        max lines 3
+      text step.artifact
+        style caption
+        max lines 2
+
+component MeasureRow(measure Measure)
+  row
+    gap 16
+    align center
+    justify spaceBetween
+    text measure.name
+      style body
+    column
+      gap 2
+      text measure.value + " " + measure.unit
+        style subheading
+      text measure.sample
+        style caption
+
+component LimitationCard(limitation Limitation)
+  card
+    column
+      gap 10
+      text limitation.area
+        style tag
+      text limitation.detail
+        style body
+        max lines 5
+      text "Sposob ograniczenia: " + limitation.mitigation
+        style caption
+        max lines 4
+
+component CitationRow(citation Citation, index Text)
+  row
+    gap 14
+    align start
+    text index
+      style caption
+    column
+      gap 3
+      text citation.authors + " (" + citation.year + ")"
+        style body
+      text citation.title
+        style subheading
+        max lines 3
+      text citation.source + " · " + citation.identifier
+        style caption
+        max lines 2
+
+component NavBar()
+  row
+    padding 16 24
+    gap 12
+    align center
+    justify spaceBetween
+
+    row
+      gap 12
+      align center
+      text "AX"
+        style tag
+      text "AXCode"
+        style subheading
+
+    row
+      gap 20
+      align center
+      button "Dowód"
+        style buttonTab
+        accessibility label "Przejdź do sekcji dowodu działania"
+        when tapped
+          goTo("Dowod")
+      button "Filozofia"
+        style buttonTab
+        accessibility label "Przejdź do sekcji filozofii języka"
+        when tapped
+          goTo("Filozofia")
+      button "Składnia"
+        style buttonTab
+        accessibility label "Przejdź do sekcji składni"
+        when tapped
+          goTo("Skladnia")
+      button "Kompilator"
+        style buttonTab
+        accessibility label "Przejdź do sekcji kompilatora"
+        when tapped
+          goTo("Kompilator")
+      button "Architektura"
+        style buttonTab
+        accessibility label "Przejdź do sekcji architektury"
+        when tapped
+          goTo("Architektura")
+      button "Dla AI"
+        style buttonTab
+        accessibility label "Przejdź do sekcji dla modeli AI"
+        when tapped
+          goTo("DlaAI")
+      button "Nauka"
+        style buttonTab
+        accessibility label "Przejdź do sekcji naukowej"
+        when tapped
+          goTo("Nauka")
+
+component FeatureCard(feature Feature)
+  card
+    column
+      gap 10
+      text feature.number
+        style tag
+      text feature.title
+        style h3
+      text feature.detail
+        style body
+        max lines 5
+
+component MetricBox(metric Metric)
+  cardAccent
+    column
+      gap 6
+      text metric.value
+        style metric
+      text metric.label
+        style caption
+        max lines 3
+
+component SyntaxWindow(block SyntaxBlock)
+  column
+    gap 12
+
+    row
+      gap 12
+      align center
+      justify spaceBetween
+      text block.label
+        style subheading
+      if expandedBlock is block.id
+        button "Zwiń"
+          style buttonTab
+          accessibility label "Zwiń przykład kodu"
+          when tapped
+            toggleBlock(block.id)
+      else
+        button "Pokaż kod"
+          style buttonTab
+          accessibility label "Pokaż przykład kodu"
+          when tapped
+            toggleBlock(block.id)
+
+    if expandedBlock is block.id
+      card
+        column
+          gap 4
+          list block.lines
+            empty
+              text "Brak treści."
+                style caption
+            item line
+              text line
+                style codeLine
+
+component LayerRow(layer Layer)
+  row
+    gap 16
+    align start
+    text layer.index
+      style tag
+    column
+      gap 4
+      text layer.name
+        style subheading
+      text layer.detail
+        style caption
+        max lines 3
+
+component ErrorRow(error ErrorClass)
+  row
+    gap 16
+    align center
+    text error.range
+      style codeLine
+    text error.name
+      style body
+
+component PitfallCard(pitfall Pitfall)
+  card
+    column
+      gap 8
+      text pitfall.title
+        style h3
+      text pitfall.detail
+        style body
+        max lines 5
+
+component StageCard(stage Stage)
+  cardAccent
+    column
+      gap 8
+      row
+        gap 12
+        align center
+        text stage.version
+          style tag
+        text stageLabel(stage.state)
+          style pill
+      text stage.title
+        style h3
+      text stage.detail
+        style body
+        max lines 4
+
+component ArchitectureDiagram()
+  card
+    column
+      gap 4
+      text "app.ax"
+        style codeLine
+      text "  |"
+        style codeLine
+      text "  v"
+        style codeLine
+      text "Lexer ---------> tokeny, pozycje, wciecia, komentarze"
+        style codeLine
+      text "  |"
+        style codeLine
+      text "  v"
+        style codeLine
+      text "Parser --------> drzewo skladniowe, dziewiec jednostek"
+        style codeLine
+      text "  |"
+        style codeLine
+      text "  v"
+        style codeLine
+      text "Type Checker --> typy, zasiegi, stany, uprawnienia, dostepnosc"
+        style codeLine
+      text "  |"
+        style codeLine
+      text "  v"
+        style codeLine
+      text "AXIR ----------> platformowo-neutralny graf aplikacji"
+        style codeLine
+      text "  |"
+        style codeLine
+      text "  +--> Optimizer"
+        style codeLine
+      text "  +--> Backend iOS ------> Swift + SwiftUI"
+        style codeLine
+      text "  +--> Backend Android --> Kotlin + Jetpack Compose"
+        style codeLine
+      text "  +--> Backend Web ------> Wasm + TypeScript + DOM"
+        style codeLine
+      text "  +--> Serwer deweloperski: hot reload, inspektor dostepnosci"
+        style codeLine
+
+screen Start
+  title "AXCode"
+
+  when screen appears
+    loadContent
+    loadSource
+    announceLocal("Strona języka AXCode.")
+
+  scroll
+    direction vertical
+
+    column
+      gap 0
+
+      NavBar()
+
+      column
+        padding 24
+        gap 24
+
+        row
+          gap 8
+          align center
+          text "Kompilator działa w tej przeglądarce · dziesięć warstw"
+            style badge
+
+        text "Jeden plik."
+          style hero
+
+        text "Cała aplikacja."
+          style heroAccent
+
+        text "AXCode to deklaratywny język aplikacji. Jeden plik .ax opisuje interfejs, stan, dane, nawigację, bezpieczeństwo, dostępność, tryb offline i testy."
+          style lead
+          max lines 4
+
+        row
+          gap 14
+          align center
+          button "Uruchom kompilator"
+            style buttonPrimary
+            accessibility label "Przejdź do sekcji kompilatora"
+            when tapped
+              goTo("Kompilator")
+          button "Zobacz składnię"
+            style buttonGhost
+            accessibility label "Przejdź do sekcji składni"
+            when tapped
+              goTo("Skladnia")
+
+        grid
+          columns 4
+          gap 14
+          list metricList()
+            empty
+              text "Brak danych."
+                style caption
+            item metric
+              MetricBox(metric)
+
+      column
+        padding 24
+        gap 20
+
+        text "Dowód działania"
+          style tag
+
+        text "Nie mockup. Kompilator, który czyta prawdziwy kod."
+          style h1
+
+        text "Poniżej działa lexer, parser, weryfikator semantyczny i runtime renderujący. Zmień cokolwiek w źródle — strona przeliczy się sama."
+          style lead
+          max lines 4
+
+        card
+          column
+            gap 14
+
+            row
+              gap 12
+              align center
+              justify spaceBetween
+              text "Kompilator AXCode"
+                style subheading
+              row
+                gap 10
+                align center
+                button "Kompiluj"
+                  style buttonPrimary
+                  accessibility label "Uruchom kompilację źródła"
+                  when tapped
+                    compileSource()
+
+                button "Wczytaj źródło"
+                  style buttonTab
+                  accessibility label "Wczytaj źródło tej strony"
+                  when tapped
+                    loadSource()
+                checkbox showSource
+                  accessibility label "Pokaż albo ukryj źródło"
+
+            if showSource
+              field sourceText
+                label "Źródło w języku AXCode"
+                max length 400000
+
+            text "Wynik kompilacji"
+              style caption
+
+            text compileStatus
+              style body
+
+            list compileFindings
+              empty
+                text "Brak znalezisk. Dostępność, nawigacja, typy i magazyny przeszły kontrolę."
+                  style badge
+              item finding
+                text finding
+                  style caption
+
+      column
+        padding 24
+        gap 20
+
+        text "Filozofia"
+          style tag
+
+        text "Język warstwy aplikacji, nie język systemowy."
+          style h1
+
+        text "AXCode nie zastępuje Swifta, Kotlina ani Rusta. Opisuje ekrany, stan, dane, nawigację, uprawnienia, dostępność i testy — czyli warstwę, którą dziś pisze się trzy razy."
+          style lead
+          max lines 4
+
+        grid
+          columns 2
+          gap 18
+          list featureList()
+            empty
+              text "Brak treści."
+                style caption
+            item feature
+              FeatureCard(feature)
+
+      column
+        padding 24
+        gap 20
+
+        text "Składnia"
+          style tag
+
+        text "Kod, który czyta się jak specyfikacja produktu."
+          style h1
+
+        text "Wcięcie jest składnią. Typ idzie po nazwie. Komentarze to dwa ukośniki. Trzy zasady, które modele AI mylą najczęściej."
+          style lead
+          max lines 4
+
+        column
+          gap 24
+          list syntaxList()
+            empty
+              text "Brak przykładów."
+                style caption
+            item block
+              SyntaxWindow(block)
+
+      column
+        padding 24
+        gap 20
+
+        text "Architektura"
+          style tag
+
+        text "Jeden front-end. Wiele backendów."
+          style h1
+
+        text "Kompilator nie tłumaczy AXCode bezpośrednio na Swift, Kotlin czy JavaScript. Tworzy neutralny graf aplikacji, a dopiero na jego podstawie generuje kod platform."
+          style lead
+          max lines 4
+
+        ArchitectureDiagram()
+
+        text "Dziesięć warstw tej implementacji"
+          style h2
+
+        column
+          gap 16
+          list layerList()
+            empty
+              text "Brak warstw."
+                style caption
+            item layer
+              LayerRow(layer)
+
+        text "Etapy rozwoju"
+          style h2
+
+        grid
+          columns 2
+          gap 18
+          list stageList()
+            empty
+              text "Brak etapów."
+                style caption
+            item stage
+              StageCard(stage)
+
+      column
+        padding 24
+        gap 20
+
+        text "Specyfikacja"
+          style tag
+
+        text "Kody błędów, które uczą."
+          style h1
+
+        text "Każdy błąd ma identyfikator, kategorię, pozycję, wyjaśnienie i proponowaną poprawkę. Komunikat nie tylko przerywa budowanie — mówi, co zrobić."
+          style lead
+          max lines 4
+
+        column
+          gap 12
+          list errorList()
+            empty
+              text "Brak klas błędów."
+                style caption
+            item error
+              ErrorRow(error)
+
+        text "Przykład komunikatu"
+          style h2
+
+        card
+          column
+            gap 4
+            text "[AX7002] Przycisk ikonowy bez etykiety dostepnosci w ekranie Profile (linia 1841)."
+              style codeLine
+            text " "
+              style codeLine
+            text "Poprawka: Dodaj accessibility label \"opis akcji\"."
+              style codeLine
+            text " "
+              style codeLine
+            text "[AX6001] Magazyn apiKeys wyglada na przechowujacy sekrety, ale nie ma klasy secure ani encrypted."
+              style codeLine
+            text " "
+              style codeLine
+            text "Poprawka: Zmien na: store apiKeys secure"
+              style codeLine
+
+      column
+        padding 24
+        gap 20
+
+        text "Dla modeli AI"
+          style tag
+
+        text "Sześć pułapek, których nie da się zgadnąć."
+          style h1
+
+        text "Dokumentacja techniczna jest dołączona do kompilatora. Powiedz dowolnemu modelowi, żeby ją przeczytał, zanim zacznie pisać w AXCode."
+          style lead
+          max lines 4
+
+        grid
+          columns 2
+          gap 18
+          list pitfallList()
+            empty
+              text "Brak treści."
+                style caption
+            item pitfall
+              PitfallCard(pitfall)
+
+      column
+        padding 24
+        gap 20
+
+
+      column
+        padding 24
+        gap 20
+
+        text "Podejscie naukowe"
+          style tag
+
+        text "Metoda, hipotezy, pomiary i ograniczenia."
+          style h1
+
+        text "Strona opisuje jezyk nie tylko jako produkt, ale jako przedmiot analizy. Ponizej metoda badawcza, hipotezy z wynikami, zestaw pomiarow, jawnie wypisane ograniczenia oraz bibliografia."
+          style lead
+          max lines 4
+
+        text "Metoda badawcza"
+          style h2
+
+        column
+          gap 16
+          list methodList()
+            empty
+              text "Brak krokow metody."
+                style caption
+            item step
+              MethodStepRow(step)
+
+      column
+        padding 24
+        gap 20
+
+        text "Hipotezy"
+          style h2
+
+        column
+          gap 18
+          list hypothesisList()
+            empty
+              text "Brak hipotez."
+                style caption
+            item hypothesis
+              HypothesisCard(hypothesis)
+
+      column
+        padding 24
+        gap 20
+
+        text "Pomiary"
+          style h2
+
+        text "Wszystkie wartosci pochodza z rzeczywistych plikow projektu, nie z szacunkow."
+          style caption
+          max lines 3
+
+        column
+          gap 12
+          list measureList()
+            empty
+              text "Brak pomiarow."
+                style caption
+            item measure
+              MeasureRow(measure)
+
+      column
+        padding 24
+        gap 20
+
+        text "Ograniczenia"
+          style h2
+
+        text "Piec ograniczen wypisanych jawnie. Praca nie przedstawia jezyka jako rozwiazania bez wad."
+          style caption
+          max lines 3
+
+        grid
+          columns 2
+          gap 18
+          list limitationList()
+            empty
+              text "Brak ograniczen."
+                style caption
+            item limitation
+              LimitationCard(limitation)
+
+      column
+        padding 24
+        gap 20
+
+        text "Bibliografia"
+          style h2
+
+        column
+          gap 14
+          list citationList()
+            empty
+              text "Brak pozycji."
+                style caption
+            item citation
+              CitationRow(citation, citation.id)
+
+      column
+        padding 24
+        gap 20
+
+        text "Dokumenty do skopiowania"
+          style h2
+
+        text "Teksty gotowe do wklejenia na kompilator tego jezyka albo do dowolnego modelu AI, ktory ma pisac w AXCode. Kazdy dokument jest generowany z danych tej strony, wiec nie rozjedzie sie z trescia."
+          style lead
+          max lines 5
+
+        row
+          gap 12
+          align center
+          button "Skopiuj specyfikacje"
+            style buttonPrimary
+            accessibility label "Skopiuj specyfikacje jezyka do schowka"
+            when tapped
+              copySpec()
+          button "Skopiuj pelny raport"
+            style buttonSecondary
+            accessibility label "Skopiuj pelny raport do schowka"
+            when tapped
+              copyFullReport()
+
+        row
+          gap 12
+          align center
+          button "Skopiuj metode badawcza"
+            style buttonGhost
+            accessibility label "Skopiuj metode badawcza do schowka"
+            when tapped
+              copyMethod()
+          button "Skopiuj bibliografie"
+            style buttonGhost
+            accessibility label "Skopiuj bibliografie do schowka"
+            when tapped
+              copyCitations()
+
+        if length(clipboardText) > 0
+          card
+            column
+              gap 8
+              text "Skopiowano do schowka"
+                style subheading
+              text length(clipboardText) + " znakow gotowych do wklejenia."
+                style caption
+
+        text "Zawartosc dokumentow"
+          style subheading
+
+        card
+          column
+            gap 4
+            text "specyfikacja: jednostki programu, typy, klasy magazynow, zdarzenia, kontenery, elementy, reguly kompilatora, kody bledow"
+              style codeLine
+            text "metoda: szesc krokow z celem i artefaktem kazdego"
+              style codeLine
+            text "pomiary: dwanascie wartosci z probka zrodlowa"
+              style codeLine
+            text "raport pelny: wszystkie powyzsze w jednym tekscie"
+              style codeLine
+
+        text "AXCode"
+          style h2
+
+        text "Deklaratywny język aplikacji. Autor: Axel G."
+          style body
+
+        text "@axelgadomski"
+          style caption
+
+        row
+          gap 12
+          align center
+          button "Od początku"
+            style buttonGhost
+            accessibility label "Wróć do początku strony"
+            when tapped
+              goTo("Start")
+          button "GitHub"
+            style buttonGhost
+            accessibility label "Otwórz repozytorium AXCode"
+            when tapped
+              openUrl("https://github.com/axelgadomski420/AXCode")
+
+test "Lista możliwości ma cztery pozycje"
+  given value loadContent()
+  when length(featureList())
+  then result is 4
+
+test "Lista warstw ma dziesięć pozycji"
+  given value loadContent()
+  when length(layerList())
+  then result is 10
+
+test "Lista hipotez ma piec pozycji"
+  given value loadContent()
+  when length(hypothesisList())
+  then result is 5
+
+test "Lista pomiarow ma dwanascie pozycji"
+  given value loadContent()
+  when length(measureList())
+  then result is 12
+
+test "Dokument specyfikacji nie jest pusty"
+  given value loadContent()
+  when length(specDocument())
+  then result is not 0
+
+test "Pelny raport zawiera wszystkie sekcje"
+  given value loadContent()
+  when contains(fullReport(), "METODA BADAWCZA")
+  then result is true
+
+test "Przełączanie bloku kodu rozwija i zwija"
+  given value toggleBlock("s1")
+  when expandedBlock
+  then result is "s1"
+
+accessibility test "Strona AXCode"
+  open Start
+  expect all fields have labels
+  expect all images have alt
+  expect all icon buttons have accessibility label
+  expect contrast passes AA
