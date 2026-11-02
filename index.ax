@@ -1,0 +1,210 @@
+app "AXCode — Podręcznik Referencyjny" version "3.0.0" language pl supports web
+
+// ============================================================================
+// MOTYW — paleta kolorów w stylu Apple (minimalizm, duża czytelność)
+// ============================================================================
+theme default follows system
+  color primary #4F46E5
+  color background light #FFFFFF
+  color background dark #0B0C14
+  color surface light #F7F8FC
+  color surface dark #161A26
+  color text light #0B0C14
+  color text dark #F3F5FF
+  color muted light #6E7280
+  color muted dark #8C93B2
+  color border light #E4E7F2
+  color border dark #232838
+  radius medium 16
+  font body "Inter"
+  font display "Space Grotesk"
+
+// ============================================================================
+// STYLE — typografia i komponenty
+// ============================================================================
+style display
+  font display
+  font size 48
+  weight bold
+  line height 1.06
+  letter spacing -1.2
+
+style title
+  font display
+  font size 30
+  weight bold
+  letter spacing -0.6
+
+style heading
+  font display
+  font size 20
+  weight semibold
+
+style body
+  font size 16
+  line height 1.65
+
+style caption
+  font size 13
+  color theme.muted
+
+style code
+  font mono
+  font size 14
+  line height 1.55
+  background theme.surfaceRaised
+  radius medium
+  padding 16
+
+style card
+  background theme.surface
+  radius large
+  padding 24
+  shadow medium
+
+// ============================================================================
+// DANE — struktura podręcznika (dla botów i wyszukiwarek)
+// ============================================================================
+data Section
+  field id Text required
+  field title Text required
+  field body Text
+
+store sections local list Section
+
+// ============================================================================
+// GLOBALNY STAN — meta informacje
+// ============================================================================
+global state appName Text = "AXCode"
+global state appVersion Text = "3.0.0"
+global state repoUrl Text = "https://github.com/axelgadomski420/AXCode"
+
+// ============================================================================
+// EKRAN GŁÓWNY — strona podręcznika
+// ============================================================================
+screen Home
+  title "AXCode — Podręcznik Referencyjny"
+
+  column
+    gap 32
+    padding 48
+
+    // --- Nagłówek ---
+    text "AXCode" style display
+    text "Deklaratywny język programowania. Jeden plik .ax opisuje interfejs, stan, dane, logikę, dostępność i pracę offline. Kompiluje się na web, iOS i Android." style body
+
+    // --- Spis treści ---
+    card
+      padding 24
+      text "Spis treści" style heading
+      text "1. Filozofia języka" style body
+      text "2. Struktura pliku" style body
+      text "3. Deklaracja app" style body
+      text "4. Motywy: theme" style body
+      text "5. Style: style" style body
+      text "6. Ekrany: screen" style body
+      text "7. Układ: column, row, card" style body
+      text "8. Typografia: text" style body
+      text "9. Interakcje: button" style body
+      text "10. Nawigacja" style body
+      text "11. Dostępność" style body
+      text "12. Stan aplikacji" style body
+      text "13. Dane i modele" style body
+      text "14. Logika i funkcje" style body
+      text "15. Bezpieczeństwo" style body
+      text "16. Praca offline" style body
+      text "17. Testy" style body
+      text "18. Kompilacja i cele" style body
+
+    // --- 1. Filozofia ---
+    text "1. Filozofia języka" style title
+    text "AXCode opiera się na czterech zasadach: deklaratywność (opisujesz co, nie jak), jeden plik (.ax zawiera cały projekt), dostępność jako domyślność (każdy element interaktywny wymaga accessibility label), wieloplatformowość (ten sam plik buduje web, iOS i Android)." style body
+
+    // --- 2. Struktura ---
+    text "2. Struktura pliku" style title
+    text "Plik .ax składa się z sekcji. Każda sekcja zaczyna się słowem kluczowym, a jej zawartość wyznaczają wcięcia (dwie spacje). Kolejność sekcji jest dowolna, ale zalecana to: app, theme, style, enum, data, store, global state, permission, api, function, component, screen, test." style body
+    text "app \"Nazwa\" version \"1.0.0\" language pl supports web, ios, android" style code
+
+    // --- 3. app ---
+    text "3. Deklaracja app" style title
+    text "Pierwsza linia pliku definiuje metadane aplikacji: nazwę, wersję, język interfejsu i listę docelowych platform." style body
+    text "app \"AXCode\" version \"1.0.0\" language pl supports web, ios, android" style code
+
+    // --- 4. theme ---
+    text "4. Motywy: theme" style title
+    text "Sekcja theme definiuje paletę kolorów. Kolory są dostępne w całym pliku jako nazwy semantyczne. Można definiować osobne wartości dla trybu jasnego i ciemnego." style body
+    text "theme default follows system\n  color primary #4F46E5\n  color background light #FFFFFF dark #0B0C14" style code
+
+    // --- 5. style ---
+    text "5. Style: style" style title
+    text "Styl to nazwany zestaw właściwości typograficznych i wizualnych, które można stosować do elementów. Dostępne właściwości: font size, weight, line height, color, alignment." style body
+    text "style display\n  font size 38\n  weight bold\n  color primary" style code
+
+    // --- 6. screen ---
+    text "6. Ekrany: screen" style title
+    text "Ekran to pojedynczy widok aplikacji. Ma tytuł i jedno lub więcej dzieci (układów, tekstów, przycisków). Nazwa ekranu jest identyfikatorem używanym w nawigacji." style body
+    text "screen Home\n  title \"Start\"\n  column\n    gap 24\n    padding 24\n    text \"Witaj\" style display" style code
+
+    // --- 7. Układ ---
+    text "7. Układ: column, row, card" style title
+    text "column układa dzieci pionowo, row — poziomo. Oba przyjmują gap (odstęp między dziećmi) i padding (wewnętrzny margines). card to kontener z tłem, zaokrągleniami i cieniem." style body
+    text "column\n  gap 16\n  padding 24\n  text \"Pierwszy\"\n  text \"Drugi\"" style code
+
+    // --- 8. text ---
+    text "8. Typografia: text" style title
+    text "Element text wyświetla treść tekstową. Jego wygląd określa atrybut style. Można też nadpisywać właściwości lokalnie (font size, weight, color)." style body
+    text "text \"AXCode\" style display\n\ntext \"AXCode\" font size 40 weight bold color primary" style code
+
+    // --- 9. button ---
+    text "9. Interakcje: button" style title
+    text "Przycisk wymaga etykiety tekstowej, etykiety dostępności i akcji. Akcje dostępne w bloku when tapped: go to (nawigacja), set (ustawienie stanu), call (wywołanie funkcji), show alert (alert systemowy)." style body
+    text "button \"Zapisz\"\n  accessibility label \"Zapisz zmiany w profilu\"\n  when tapped\n    go to Profile" style code
+
+    // --- 10. Nawigacja ---
+    text "10. Nawigacja" style title
+    text "Nawigacja odbywa się przez dyrektywę go to. Kompilator weryfikuje, czy docelowy ekran istnieje. Dla przejść wstecz używa się go back." style body
+    text "when tapped\n  go to Docs\n\nwhen tapped\n  go back" style code
+
+    // --- 11. Dostępność ---
+    text "11. Dostępność" style title
+    text "Każdy element interaktywny (przycisk, pole tekstowe, przełącznik) musi mieć accessibility label. Kompilator odrzuca aplikację bez niego (błąd AX7002). Dla elementów dekoracyjnych można użyć accessibility hidden." style body
+    text "button \"OK\"\n  accessibility label \"Potwierdź i zamknij okno\"" style code
+
+    // --- 12. Stan ---
+    text "12. Stan aplikacji" style title
+    text "Stan to reaktywne zmienne, których zmiana powoduje ponowne wyrenderowanie ekranów, które ich używają. Stan lokalny (state) wymaga typu, wartość początkowa jest opcjonalna. Stan globalny (global state) wymaga wartości początkowej." style body
+    text "state counter Number = 0\nglobal state isLoggedIn Boolean = false" style code
+
+    // --- 13. Dane ---
+    text "13. Dane i modele" style title
+    text "Model opisuje strukturę danych przechowywanych lokalnie lub synchronizowanych z serwerem. Kolekcje deklaruje się z użyciem store." style body
+    text "data Note\n  field title Text required\n  field body Text\n  field createdAt Date default now\n\nstore notes local list Note" style code
+
+    // --- 14. Logika ---
+    text "14. Logika i funkcje" style title
+    text "Sekcja function zawiera funkcje i procedury wywoływane z akcji. Dostępne konstrukcje: if/else, for each, while, return, wait." style body
+    text "function validateEmail(input Text) returns Boolean\n  if input contains \"@\" and input contains \".\"\n    return true\n  else\n    return false" style code
+
+    // --- 15. Bezpieczeństwo ---
+    text "15. Bezpieczeństwo" style title
+    text "Deklaratywne reguły dostępu chronią dane użytkownika. Kompilator generuje odpowiednie mechanizmy po stronie web (HTTPS, CSP) oraz iOS/Android (Keychain, EncryptedSharedPreferences)." style body
+    text "permission\n  require authentication for Profile, Settings\n  protect notes owner only\n  encrypt fields Note.body" style code
+
+    // --- 16. Praca offline ---
+    text "16. Praca offline" style title
+    text "Praca offline jest domyślnie włączona. Dane są przechowywane lokalnie i synchronizowane, gdy urządzenie wróci do sieci." style body
+    text "offline first\n  sync enabled\n  conflict resolution last-write-wins" style code
+
+    // --- 17. Testy ---
+    text "17. Testy" style title
+    text "Testy deklaruje się w tym samym pliku. Kompilator uruchamia je w trybie --test." style body
+    text "test \"walidacja e-maila\"\n  given input \"a@b.pl\"\n  expect validateEmail(input) is true" style code
+
+    // --- 18. Kompilacja ---
+    text "18. Kompilacja i cele" style title
+    text "Kompilator przyjmuje plik .ax i generuje aplikację dla wybranego celu: web, ios lub android. Dla celu web wynikiem są pliki index.html, ax.app.js i ax.app.css — statyczna aplikacja gotowa do wdrożenia na Vercel." style body
+    text "axc build app.ax --target web --out ./dist/web" style code
+
+    // --- Stopka ---
+    text "AXCode — podręcznik referencyjny. Treść udostępniona na licencji MIT." style caption
+    text "Repozytorium: https://github.com/axelgadomski420/AXCode" style caption
