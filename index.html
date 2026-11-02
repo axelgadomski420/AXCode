@@ -3,53 +3,72 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AXCode — jeden język. Cała aplikacja.</title>
-  <meta name="description" content="AXCode to deklaratywny język aplikacji: jeden plik .ax opisuje UI, stan, dane, nawigację, dostępność i testy. Kompilacja do iOS, Android i Web." />
+  <title>AXCode — jeden język. Cała aplikacja. Dowód: AXBridge.</title>
+  <meta
+    name="description"
+    content="AXCode to deklaratywny język aplikacji. Jeden plik .ax opisuje UI, stan, dane, bezpieczeństwo, dostępność i testy. AXBridge to działająca aplikacja referencyjna."
+  />
   <meta name="theme-color" content="#09090b" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
 
   <style>
     :root {
-      --bg: #09090b;
-      --bg-soft: #101013;
-      --surface: #18181b;
-      --surface-2: #232327;
-      --border: #2f2f35;
+      --bg: #060608;
+      --bg-soft: #0c0c0f;
+      --surface: #131316;
+      --surface-2: #1c1c21;
+      --border: rgba(255, 255, 255, 0.08);
       --text: #fafafa;
       --muted: #a1a1aa;
       --primary: #7c3aed;
-      --primary-soft: #ede9fe;
+      --primary-2: #a855f7;
       --accent: #06b6d4;
-      --success: #16a34a;
-      --warning: #d97706;
-      --danger: #dc2626;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
       --radius: 18px;
-      --radius-lg: 28px;
-      --max: 1180px;
+      --radius-lg: 30px;
+      --max: 1220px;
       --font: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     }
 
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       margin: 0;
-      background:
-        radial-gradient(900px 500px at 80% -10%, rgba(124, 58, 237, .22), transparent 60%),
-        radial-gradient(700px 420px at 10% 10%, rgba(6, 182, 212, .13), transparent 60%),
-        var(--bg);
       color: var(--text);
       font-family: var(--font);
       line-height: 1.55;
+      background:
+        radial-gradient(1100px 620px at 85% -8%, rgba(124, 58, 237, 0.24), transparent 62%),
+        radial-gradient(760px 520px at 5% 8%, rgba(6, 182, 212, 0.14), transparent 58%),
+        radial-gradient(900px 700px at 50% 110%, rgba(168, 85, 247, 0.12), transparent 60%),
+        var(--bg);
       -webkit-font-smoothing: antialiased;
     }
 
-    a { color: inherit; text-decoration: none; }
-    img { max-width: 100%; display: block; }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code,
+    pre {
+      font-family: var(--mono);
+    }
 
     .shell {
       width: min(var(--max), calc(100% - 40px));
@@ -59,139 +78,154 @@
     .nav {
       position: sticky;
       top: 0;
-      z-index: 50;
-      backdrop-filter: blur(18px);
-      background: rgba(9, 9, 11, .72);
-      border-bottom: 1px solid rgba(255,255,255,.07);
+      z-index: 100;
+      backdrop-filter: blur(22px);
+      background: rgba(6, 6, 8, 0.74);
+      border-bottom: 1px solid var(--border);
     }
 
     .nav-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      padding: 16px 0;
+      gap: 24px;
+      padding: 15px 0;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      font-weight: 800;
-      letter-spacing: -.03em;
+      font-weight: 850;
+      letter-spacing: -0.04em;
     }
 
     .logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
+      font-size: 15px;
       font-weight: 900;
-      box-shadow: 0 0 28px rgba(124,58,237,.45);
+      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      box-shadow: 0 0 34px rgba(124, 58, 237, 0.5);
     }
 
     .nav-links {
       display: flex;
-      gap: 22px;
+      gap: 24px;
       color: var(--muted);
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 550;
     }
 
-    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover {
+      color: var(--text);
+    }
 
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 9px;
       border: 0;
       cursor: pointer;
       font: inherit;
-      font-weight: 650;
+      font-weight: 700;
       border-radius: 999px;
-      padding: 12px 20px;
-      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      padding: 13px 22px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
     .btn-primary {
       color: white;
-      background: linear-gradient(135deg, var(--primary), #9333ea);
-      box-shadow: 0 10px 30px rgba(124,58,237,.35);
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      box-shadow: 0 14px 38px rgba(124, 58, 237, 0.38);
     }
 
-    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+    }
+
     .btn-ghost {
       color: var(--text);
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.13);
     }
 
     .hero {
-      padding: 96px 0 72px;
+      padding: 110px 0 80px;
     }
 
-    .eyebrow {
+    .status {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 8px 14px;
+      padding: 8px 15px;
       border-radius: 999px;
-      background: rgba(124,58,237,.14);
-      border: 1px solid rgba(124,58,237,.32);
-      color: #d8b4fe;
       font-size: 13px;
-      font-weight: 650;
+      font-weight: 700;
+      color: #bbf7d0;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
     }
 
     h1 {
-      font-size: clamp(42px, 7vw, 88px);
-      line-height: .98;
-      letter-spacing: -.05em;
-      margin: 24px 0 20px;
-      font-weight: 800;
+      margin: 26px 0 22px;
+      font-size: clamp(44px, 7.4vw, 96px);
+      line-height: 0.96;
+      letter-spacing: -0.055em;
+      font-weight: 900;
     }
 
     .gradient {
-      background: linear-gradient(100deg, #fff 15%, #c4b5fd 45%, #67e8f9 80%);
+      background: linear-gradient(100deg, #ffffff 12%, #c4b5fd 45%, #67e8f9 82%);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
 
     .lead {
-      max-width: 760px;
+      max-width: 810px;
       color: var(--muted);
-      font-size: clamp(17px, 2vw, 21px);
+      font-size: clamp(17px, 2.1vw, 22px);
     }
 
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
-      margin-top: 34px;
+      margin-top: 36px;
     }
 
     .metrics {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 14px;
-      margin-top: 56px;
+      margin-top: 64px;
     }
 
     .metric {
-      padding: 22px;
+      padding: 24px;
       border-radius: var(--radius);
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
     }
 
     .metric b {
       display: block;
-      font-size: clamp(26px, 3.4vw, 40px);
-      letter-spacing: -.04em;
+      font-size: clamp(28px, 3.5vw, 42px);
+      letter-spacing: -0.045em;
     }
 
     .metric span {
@@ -199,18 +233,34 @@
       font-size: 13px;
     }
 
-    section { padding: 88px 0; }
+    section {
+      padding: 96px 0;
+    }
 
     .section-head {
-      max-width: 780px;
-      margin-bottom: 44px;
+      max-width: 830px;
+      margin-bottom: 48px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #d8b4fe;
+      background: rgba(124, 58, 237, 0.14);
+      border: 1px solid rgba(124, 58, 237, 0.32);
     }
 
     h2 {
-      font-size: clamp(30px, 4.4vw, 52px);
-      line-height: 1.05;
-      letter-spacing: -.045em;
-      margin: 14px 0 16px;
+      margin: 16px 0 18px;
+      font-size: clamp(32px, 4.6vw, 56px);
+      line-height: 1.03;
+      letter-spacing: -0.05em;
+      font-weight: 850;
     }
 
     .section-head p {
@@ -223,26 +273,37 @@
       gap: 18px;
     }
 
-    .grid-3 { grid-template-columns: repeat(3, 1fr); }
-    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
 
     .card {
-      padding: 28px;
+      position: relative;
+      padding: 30px;
       border-radius: var(--radius-lg);
-      background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025));
-      border: 1px solid rgba(255,255,255,.08);
-      transition: transform .25s ease, border-color .25s ease;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.022));
+      border: 1px solid var(--border);
+      transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(124,58,237,.45);
+      transform: translateY(-5px);
+      border-color: rgba(124, 58, 237, 0.5);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
     }
 
     .card h3 {
-      margin: 16px 0 10px;
-      font-size: 21px;
-      letter-spacing: -.02em;
+      margin: 18px 0 10px;
+      font-size: 22px;
+      letter-spacing: -0.025em;
     }
 
     .card p {
@@ -252,40 +313,45 @@
     }
 
     .icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
       display: grid;
       place-items: center;
-      font-size: 21px;
-      background: rgba(124,58,237,.16);
-      border: 1px solid rgba(124,58,237,.28);
+      font-size: 22px;
+      background: rgba(124, 58, 237, 0.17);
+      border: 1px solid rgba(124, 58, 237, 0.3);
     }
 
     .code-window {
       border-radius: var(--radius-lg);
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,.1);
-      background: #0b0b0e;
-      box-shadow: 0 30px 90px rgba(0,0,0,.55);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      background: #0a0a0d;
+      box-shadow: 0 40px 110px rgba(0, 0, 0, 0.62);
     }
 
     .window-bar {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 14px 18px;
-      background: #131316;
-      border-bottom: 1px solid rgba(255,255,255,.07);
+      padding: 15px 19px;
+      background: #141417;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     }
 
-    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
     .red { background: #ff5f57; }
     .yellow { background: #febc2e; }
     .green { background: #28c840; }
 
     .file-name {
-      margin-left: 10px;
+      margin-left: 11px;
       color: var(--muted);
       font-family: var(--mono);
       font-size: 12px;
@@ -293,11 +359,10 @@
 
     pre {
       margin: 0;
-      padding: 26px;
+      padding: 28px;
       overflow-x: auto;
-      font-family: var(--mono);
       font-size: 13px;
-      line-height: 1.65;
+      line-height: 1.68;
       color: #e4e4e7;
     }
 
@@ -309,8 +374,8 @@
 
     .split {
       display: grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap: 34px;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 38px;
       align-items: center;
     }
 
@@ -318,54 +383,72 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
-      overflow: hidden;
       border-radius: var(--radius);
-      border: 1px solid rgba(255,255,255,.09);
+      overflow: hidden;
+      border: 1px solid var(--border);
     }
 
-    th, td {
-      padding: 15px 16px;
+    th,
+    td {
+      padding: 16px;
       text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,.07);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     }
 
     th {
-      background: rgba(255,255,255,.045);
-      font-size: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--muted);
     }
 
-    td { color: #e4e4e7; }
-    tr:last-child td { border-bottom: 0; }
-
-    .good { color: #4ade80; font-weight: 650; }
-    .warn { color: #fbbf24; font-weight: 650; }
-    .bad { color: #f87171; font-weight: 650; }
-
-    .pill {
-      display: inline-block;
-      padding: 5px 11px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 650;
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.1);
-      color: var(--muted);
+    td {
+      color: #e4e4e7;
     }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .good { color: #4ade80; font-weight: 700; }
+    .warn { color: #fbbf24; font-weight: 700; }
+    .bad { color: #f87171; font-weight: 700; }
 
     .architecture {
-      font-family: var(--mono);
-      font-size: 13px;
-      line-height: 1.75;
-      padding: 30px;
+      padding: 34px;
       border-radius: var(--radius-lg);
-      background: #0b0b0e;
-      border: 1px solid rgba(255,255,255,.09);
+      background: #0a0a0d;
+      border: 1px solid var(--border);
       overflow-x: auto;
       color: #d4d4d8;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.8;
       white-space: pre;
+    }
+
+    .proof {
+      padding: 38px;
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(135deg, rgba(124, 58, 237, 0.22), rgba(6, 182, 212, 0.12));
+      border: 1px solid rgba(124, 58, 237, 0.34);
+    }
+
+    .proof h3 {
+      margin-top: 0;
+      font-size: 26px;
+      letter-spacing: -0.03em;
+    }
+
+    .proof ul {
+      padding-left: 21px;
+      color: #e4e4e7;
+    }
+
+    .proof li {
+      margin-bottom: 11px;
     }
 
     .roadmap {
@@ -375,40 +458,58 @@
 
     .phase {
       display: grid;
-      grid-template-columns: 130px 1fr;
-      gap: 24px;
-      padding: 26px;
+      grid-template-columns: 150px 1fr;
+      gap: 28px;
+      padding: 28px;
       border-radius: var(--radius-lg);
-      background: rgba(255,255,255,.035);
-      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--border);
     }
 
     .phase-tag {
-      font-weight: 800;
-      font-size: 22px;
-      letter-spacing: -.03em;
+      font-size: 24px;
+      font-weight: 850;
+      letter-spacing: -0.04em;
       color: #c4b5fd;
     }
 
-    .phase h3 { margin: 0 0 8px; }
-    .phase p { margin: 0; color: var(--muted); font-size: 15px; }
-
-    .proof {
-      padding: 34px;
-      border-radius: var(--radius-lg);
-      background:
-        linear-gradient(135deg, rgba(124,58,237,.2), rgba(6,182,212,.12));
-      border: 1px solid rgba(124,58,237,.3);
+    .phase h3 {
+      margin: 0 0 9px;
     }
 
-    .proof h3 { margin-top: 0; }
+    .phase p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
 
-    .proof ul { color: #e4e4e7; padding-left: 20px; }
-    .proof li { margin-bottom: 10px; }
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 15px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      font-size: 14px;
+      color: #e4e4e7;
+    }
+
+    .check {
+      color: var(--success);
+      font-weight: 900;
+    }
 
     .footer {
-      padding: 60px 0 44px;
-      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 68px 0 48px;
+      border-top: 1px solid var(--border);
       color: var(--muted);
       font-size: 14px;
     }
@@ -416,31 +517,65 @@
     .footer-inner {
       display: flex;
       justify-content: space-between;
-      gap: 24px;
+      gap: 26px;
       flex-wrap: wrap;
     }
 
-    @media (max-width: 980px) {
-      .grid-3, .grid-2, .split { grid-template-columns: 1fr; }
-      .metrics { grid-template-columns: repeat(2, 1fr); }
-      .nav-links { display: none; }
-      .phase { grid-template-columns: 1fr; }
+    @media (max-width: 1020px) {
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .phase {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-list {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
-      html { scroll-behavior: auto; }
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
     }
 
     @keyframes rise {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: none; }
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
     }
 
-    .rise { animation: rise .8s ease both; }
-    .delay-1 { animation-delay: .08s; }
-    .delay-2 { animation-delay: .16s; }
-    .delay-3 { animation-delay: .24s; }
+    .rise {
+      animation: rise 0.85s ease both;
+    }
+
+    .delay-1 { animation-delay: 0.08s; }
+    .delay-2 { animation-delay: 0.16s; }
+    .delay-3 { animation-delay: 0.24s; }
   </style>
 </head>
 
@@ -453,22 +588,27 @@
       </a>
 
       <nav class="nav-links" aria-label="Nawigacja główna">
+        <a href="#dowod">Dowód</a>
         <a href="#filozofia">Filozofia</a>
         <a href="#skladnia">Składnia</a>
         <a href="#benchmark">Benchmark</a>
         <a href="#kompilator">Kompilator</a>
+        <a href="#axbridge">AXBridge</a>
         <a href="#specyfikacja">Specyfikacja</a>
         <a href="#plan">Plan</a>
       </nav>
 
-      <a class="btn btn-primary" href="#specyfikacja">Przeczytaj specyfikację</a>
+      <a class="btn btn-primary" href="#axbridge">Zobacz działającą betę</a>
     </div>
   </header>
 
   <main id="top">
     <section class="hero">
       <div class="shell">
-        <span class="eyebrow rise">AXCode · deklaratywny język aplikacji · wersja specyfikacji 1.0</span>
+        <span class="status rise">
+          <span class="status-dot"></span>
+          Beta działa · AXBridge 1.5.1-production · AXCode live
+        </span>
 
         <h1 class="rise delay-1">
           Jeden plik.<br />
@@ -476,32 +616,106 @@
         </h1>
 
         <p class="lead rise delay-2">
-          AXCode to hipotetyczny, produkcyjnie zaprojektowany język do tworzenia aplikacji mobilnych,
-          webowych i desktopowych. Jeden plik <code>.ax</code> opisuje interfejs, stan, dane, nawigację,
-          dostępność, offline, testy i integracje — bez osobnych plików HTML, CSS i JavaScript.
+          <strong>AXCode</strong> to deklaratywny język aplikacji. Jeden plik <code>.ax</code> opisuje
+          interfejs, stan, dane, nawigację, bezpieczeństwo, dostępność, offline i testy.
+          <strong>AXBridge</strong> jest jego działającą aplikacją referencyjną — komunikatorem dostępnościowym
+          z kontami, szyfrowaniem end-to-end, kolejką offline, kodem Morse’a, mową, muzyką i trybem Pomoc.
         </p>
 
         <div class="hero-actions rise delay-3">
           <a class="btn btn-primary" href="#benchmark">Zobacz oszczędność kodu</a>
-          <a class="btn btn-ghost" href="#kompilator">Architektura kompilatora</a>
+          <a class="btn btn-ghost" href="#axbridge">Architektura AXBridge</a>
         </div>
 
         <div class="metrics">
           <div class="metric">
             <b>1</b>
-            <span>język dla UI, stanu, danych i logiki</span>
+            <span>plik .ax definiuje UI, stan, dane i logikę</span>
           </div>
           <div class="metric">
             <b>3</b>
-            <span>platformy docelowe: iOS, Android, Web</span>
+            <span>platformy: iOS, Android, Web</span>
           </div>
           <div class="metric">
             <b>40–60%</b>
-            <span>cel redukcji kodu względem HTML/CSS/JS</span>
+            <span>realistyczna redukcja kodu względem HTML/CSS/JS</span>
           </div>
           <div class="metric">
-            <b>0</b>
-            <span>osobnych plików CSS i JS w podstawowym projekcie</span>
+            <b>1.5.1</b>
+            <span>wersja działającej bety AXBridge</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="dowod">
+      <div class="shell">
+        <div class="section-head">
+          <span class="tag">Dowód działania</span>
+          <h2>AXBridge nie jest mockupem. To działająca beta.</h2>
+          <p>
+            AXBridge powstał jako pierwsza pełna aplikacja w AXCode. Nie demonstruje tylko składni —
+            pokazuje, że jeden język może obsłużyć realny produkt: konta, wiadomości, media, AI, offline,
+            bezpieczeństwo, dostępność i tryb alarmowy.
+          </p>
+        </div>
+
+        <div class="grid grid-4">
+          <article class="card">
+            <div class="icon">🔐</div>
+            <h3>E2EE</h3>
+            <p>
+              Wiadomości są szyfrowane na urządzeniu. Serwer przekazuje ciphertext i minimalne metadane,
+              nie plaintext.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">📡</div>
+            <h3>Offline-first</h3>
+            <p>
+              Kolejka <code>outbox</code>, idempotentne identyfikatory, ponawianie z exponential backoff
+              i wznowienie po powrocie sieci.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">🎧</div>
+            <h3>Wielokanałowość</h3>
+            <p>
+              Tekst, mowa, kod Morse’a, język migowy, muzyka, obraz, wideo i alarm są jednym modelem wiadomości.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">🧑‍🦯</div>
+            <h3>Persona-aware</h3>
+            <p>
+              Onboarding dostosowuje kanały wejścia i wyjścia dla osób głuchych, niewidomych,
+              głuchoniewidomych oraz z ograniczoną sprawnością ruchową.
+            </p>
+          </article>
+        </div>
+
+        <div class="proof" style="margin-top:24px">
+          <h3>Co już istnieje w betcie AXBridge</h3>
+          <div class="feature-list">
+            <div class="feature"><span class="check">✓</span> Rejestracja, logowanie i profile użytkowników</div>
+            <div class="feature"><span class="check">✓</span> Rozmowy, kontakty i grupy do 8 osób</div>
+            <div class="feature"><span class="check">✓</span> Szyfrowanie end-to-end i safety numbers</div>
+            <div class="feature"><span class="check">✓</span> Kolejka offline z ponawianiem</div>
+            <div class="feature"><span class="check">✓</span> Tekst, głos, obraz, wideo i pliki audio</div>
+            <div class="feature"><span class="check">✓</span> Kod Morse’a: encoder, decoder, wibracje i dźwięk</div>
+            <div class="feature"><span class="check">✓</span> Rozpoznawanie mowy z edycją przed wysłaniem</div>
+            <div class="feature"><span class="check">✓</span> Rozpoznawanie znaków migowych z potwierdzeniem</div>
+            <div class="feature"><span class="check">✓</span> Muzyka jako komunikat emocjonalny</div>
+            <div class="feature"><span class="check">✓</span> Generowanie muzyki przez Bring Your Own AI</div>
+            <div class="feature"><span class="check">✓</span> Alerty dźwiękowe zamieniane na wibracje</div>
+            <div class="feature"><span class="check">✓</span> Tryb Pomoc z czasowo ograniczoną lokalizacją</div>
+            <div class="feature"><span class="check">✓</span> Weryfikacja kontaktu przez QR i safety number</div>
+            <div class="feature"><span class="check">✓</span> Tryb uproszczony i obsługa hardware switch</div>
+            <div class="feature"><span class="check">✓</span> Społeczności i moduł TikTak</div>
+            <div class="feature"><span class="check">✓</span> Backend Cloudflare Workers, D1, R2 i KV</div>
           </div>
         </div>
       </div>
@@ -510,12 +724,12 @@
     <section id="filozofia">
       <div class="shell">
         <div class="section-head">
-          <span class="pill">Filozofia</span>
-          <h2>Aplikacja powinna być czytelna jak opis produktu.</h2>
+          <span class="tag">Filozofia</span>
+          <h2>Aplikacja powinna być czytelna jak specyfikacja produktu.</h2>
           <p>
             AXCode nie próbuje zastąpić wszystkich języków programowania. Jest językiem warstwy aplikacji:
-            ekranów, stanu, formularzy, nawigacji, danych i testów. Zaawansowany kod natywny pozostaje dostępny
-            przez bridge, ale nie jest wymagany do zbudowania typowej aplikacji.
+            ekranów, stanu, danych, nawigacji, uprawnień, dostępności i testów. Kod natywny pozostaje dostępny
+            przez bridge, ale nie jest wymagany do zbudowania typowego produktu.
           </p>
         </div>
 
@@ -524,14 +738,14 @@
             <div class="icon">📄</div>
             <h3>Jeden ekran = jeden blok</h3>
             <p>
-              Ekran zawiera własny stan, layout, zdarzenia i nawigację. Nie trzeba skakać między plikiem
-              widoku, plikiem stylów, plikiem stanu i plikiem logiki.
+              Ekran zawiera własny stan, layout, zdarzenia, nawigację i efekty. Nie trzeba skakać między
+              plikiem widoku, plikiem stylów, plikiem stanu i plikiem logiki.
             </p>
           </article>
 
           <article class="card">
             <div class="icon">⚡</div>
-            <h3>Reaktywność bez boilerplate’u</h3>
+            <h3>Reaktywność bez glue code’u</h3>
             <p>
               Zmiana stanu automatycznie aktualizuje UI. Programista nie pisze ręcznej synchronizacji DOM,
               listenerów ani cyklu życia komponentu.
@@ -542,32 +756,32 @@
             <div class="icon">🧠</div>
             <h3>Błędy po ludzku</h3>
             <p>
-              Kompilator pokazuje problem, przyczynę, pozycję i gotową poprawkę — po polsku i angielsku.
-              Błąd ma uczyć, a nie tylko blokować build.
+              Kompilator pokazuje problem, przyczynę, pozycję i proponowaną poprawkę — po polsku i angielsku.
+              Błąd ma uczyć, a nie tylko przerywać build.
             </p>
           </article>
 
           <article class="card">
             <div class="icon">♿</div>
-            <h3>Dostępność wbudowana</h3>
+            <h3>Dostępność jako typ</h3>
             <p>
-              Brak etykiety pola, obrazu bez opisu albo zbyt niski kontrast są wykrywane przed uruchomieniem.
-              AXCode traktuje dostępność jako część semantyki aplikacji.
+              Brak etykiety pola, obrazu bez opisu, zbyt mały cel dotykowy albo zły kontrast są wykrywane
+              przed uruchomieniem aplikacji.
             </p>
           </article>
 
           <article class="card">
             <div class="icon">🔒</div>
-            <h3>Prywatność jako typ</h3>
+            <h3>Bezpieczeństwo w modelu danych</h3>
             <p>
-              Dane wrażliwe, klucze i tokeny mają jawną klasę przechowywania. Nie można przypadkiem zapisać
-              sekretu w zwykłym lokalnym store.
+              Klucze, tokeny i dane wrażliwe mają jawną klasę przechowywania. Nie można przypadkiem zapisać
+              sekretu w niezabezpieczonym store.
             </p>
           </article>
 
           <article class="card">
             <div class="icon">🚫</div>
-            <h3>Celowo mniejsza powierzchnia</h3>
+            <h3>Mniejsza powierzchnia języka</h3>
             <p>
               Brak dowolnych makr, dynamicznej ewaluacji, globalnych selektorów CSS i pięciu składni na ten
               sam problem. Mniej możliwości oznacza mniej błędów.
@@ -580,11 +794,11 @@
     <section id="skladnia">
       <div class="shell">
         <div class="section-head">
-          <span class="pill">Składnia</span>
+          <span class="tag">Składnia</span>
           <h2>Kod, który można przeczytać bez znajomości frameworka.</h2>
           <p>
-            Poniższy przykład pokazuje ekran, stan, listę, formularz, nawigację, motyw i zapis lokalny
-            w jednym pliku AXCode.
+            Poniższy fragment odwzorowuje realny wzorzec z AXBridge: profil dostępności, lokalny store,
+            ekran czatu, wybór kanału komunikacji i potwierdzenie wyniku AI przed wysłaniem.
           </p>
         </div>
 
@@ -593,81 +807,73 @@
             <span class="dot red"></span>
             <span class="dot yellow"></span>
             <span class="dot green"></span>
-            <span class="file-name">app.ax</span>
+            <span class="file-name">axbridge.ax</span>
           </div>
 
-<pre><span class="com">// AXCode — aplikacja zadań</span>
-<span class="kw">app</span> <span class="str">"Tasks"</span>
-<span class="kw">version</span> <span class="str">"1.0.0"</span>
-<span class="kw">language</span> pl
-<span class="kw">supports</span> ios android web
+<pre><span class="kw">enum</span> Channel
+  text
+  speech
+  morse
+  sign
+  music
 
-<span class="kw">theme</span> default
-  <span class="kw">follows</span> system
-  <span class="kw">color</span> primary <span class="num">#2563EB</span>
-  <span class="kw">color</span> background light <span class="num">#F8FAFC</span>
-  <span class="kw">color</span> background dark <span class="num">#0B1220</span>
+<span class="kw">data</span> AccessibilityProfile
+  preferredInput Channel
+  preferredOutput Channel
+  morseWpm Number
+  vibrationStrength Number
+  textScale Number
+  highContrast Boolean
+  reduceMotion Boolean
+  confirmBeforeSend Boolean
+  showConfidence Boolean
 
-<span class="kw">data</span> Task
-  id Text
-  title Text
-  done Boolean
-  created Date
+<span class="kw">store</span> profile local
+  single AccessibilityProfile
+  key <span class="str">"axbridge.profile"</span>
 
-<span class="kw">store</span> tasks local
-  list Task
-  key <span class="str">"tasks"</span>
+<span class="kw">screen</span> Chat
+  title <span class="str">"Rozmowa"</span>
 
-<span class="kw">screen</span> Home
-  title <span class="str">"Moje zadania"</span>
-
-  <span class="kw">state</span> newTitle Text = <span class="str">""</span>
-
-  <span class="kw">when</span> screen appears
-    <span class="fn">load</span> tasks
+  <span class="kw">state</span> draft Text = <span class="str">""</span>
+  <span class="kw">state</span> inputMode Channel = profile.preferredInput
+  <span class="kw">state</span> selectedCandidate Text = <span class="str">""</span>
+  <span class="kw">state</span> signConfidence Number = <span class="num">0</span>
 
   <span class="kw">column</span>
-    padding <span class="num">20</span>
-    gap <span class="num">16</span>
+    list messages
+      item message
+        messageBubble(message)
 
-    text <span class="str">"Moje zadania"</span>
-      style title
+    <span class="kw">if</span> inputMode is Channel.sign
+      cameraPreview
+        accessibility label <span class="str">"Kamera rozpoznawania języka migowego"</span>
 
-    form <span class="str">"Nowe zadanie"</span>
-      field newTitle
-        label <span class="str">"Nowe zadanie"</span>
-        required
-        min length <span class="num">1</span>
+      card
+        text <span class="str">"Rozpoznane znaki"</span>
+          style heading
 
-      submit <span class="str">"Dodaj"</span>
-        <span class="kw">when</span> valid
-          <span class="fn">add</span> Task(
-            id = <span class="fn">newId</span>(),
-            title = newTitle,
-            done = false,
-            created = <span class="fn">now</span>()
-          ) <span class="kw">to</span> tasks
+        text <span class="str">"Pewność: "</span> + <span class="fn">round</span>(signConfidence * <span class="num">100</span>) + <span class="str">"%"</span>
 
-          <span class="fn">save</span> tasks
-          <span class="fn">set</span> newTitle = <span class="str">""</span>
+        button <span class="str">"Akceptuj i wyślij"</span>
+          style buttonPrimary
+          <span class="kw">when</span> tapped
+            <span class="com">// AI proponuje. Człowiek potwierdza.</span>
+            <span class="fn">sendSign</span>(selectedCandidate, signConfidence)
 
-    list tasks
-      empty
-        text <span class="str">"Brak zadań"</span>
+    <span class="kw">if</span> inputMode is Channel.morse
+      row
+        button <span class="str">"•"</span>
+          accessibility label <span class="str">"Kropka"</span>
+          <span class="kw">when</span> tapped
+            <span class="fn">append</span> <span class="str">"."</span> <span class="kw">to</span> morseBuffer
+            <span class="fn">vibrate</span> short
 
-      item task
-        card
-          row
-            checkbox task.done
-              accessibility label <span class="str">"Oznacz jako wykonane"</span>
-
-            text task.title
-
-            button icon <span class="str">"trash"</span>
-              accessibility label <span class="str">"Usuń zadanie"</span>
-              <span class="kw">when</span> tapped
-                <span class="fn">remove</span> task <span class="kw">from</span> tasks
-                <span class="fn">save</span> tasks</pre>
+        button <span class="str">"—"</span>
+          accessibility label <span class="str">"Kreska"</span>
+          <span class="kw">when</span> tapped
+            <span class="fn">append</span> <span class="str">"-"</span> <span class="kw">to</span> morseBuffer
+            <span class="fn">vibrate</span> medium</pre>
         </div>
       </div>
     </section>
@@ -675,24 +881,24 @@
     <section id="benchmark">
       <div class="shell">
         <div class="section-head">
-          <span class="pill">Benchmark</span>
+          <span class="tag">Benchmark</span>
           <h2>Ile naprawdę można zaoszczędzić?</h2>
           <p>
-            Poniższe liczby dotyczą referencyjnej aplikacji zadań: logowanie, lista, dodawanie, usuwanie,
-            tryb ciemny, zapis lokalny i responsywny layout. To nie jest marketingowy „zawsze 10× mniej”,
-            lecz realistyczny model redukcji boilerplate’u.
+            Poniższe liczby dotyczą referencyjnej aplikacji: logowanie, lista, dodawanie, usuwanie, tryb ciemny,
+            zapis lokalny i responsywny layout. To nie jest marketingowe „zawsze 10× mniej”, lecz uczciwy model
+            redukcji boilerplate’u.
           </p>
         </div>
 
         <div class="grid grid-3">
           <article class="card">
-            <div class="icon">📝</div>
+            <div class="icon">🌐</div>
             <h3>HTML + CSS + JavaScript</h3>
             <p>
               Osobne warstwy struktury, wyglądu i logiki. Programista ręcznie aktualizuje DOM, obsługuje zdarzenia,
               serializuje stan i dba o dostępność.
             </p>
-            <p style="margin-top:18px"><span class="pill">Orientacyjnie 220–320 linii</span></p>
+            <p style="margin-top:20px"><span class="pill">Orientacyjnie 220–320 linii</span></p>
           </article>
 
           <article class="card">
@@ -702,7 +908,7 @@
               Jeden język aplikacji, ale zwykle osobne pliki komponentów, stylów, nawigacji, stanu i warstwy danych.
               Mocny ekosystem, jednak więcej konfiguracji i abstrakcji.
             </p>
-            <p style="margin-top:18px"><span class="pill">Orientacyjnie 260–420 linii</span></p>
+            <p style="margin-top:20px"><span class="pill">Orientacyjnie 260–420 linii</span></p>
           </article>
 
           <article class="card">
@@ -712,11 +918,11 @@
               Jeden plik `.ax` opisuje UI, stan, dane, dostępność, motyw i zapis lokalny. Kompilator generuje
               warstwy platformowe i eliminuje powtarzalny kod.
             </p>
-            <p style="margin-top:18px"><span class="pill">Orientacyjnie 120–170 linii</span></p>
+            <p style="margin-top:20px"><span class="pill">Orientacyjnie 120–170 linii</span></p>
           </article>
         </div>
 
-        <div class="card" style="margin-top:22px">
+        <div class="card" style="margin-top:24px">
           <table>
             <thead>
               <tr>
@@ -758,6 +964,12 @@
                 <td class="good">store local</td>
               </tr>
               <tr>
+                <td>Kolejka offline</td>
+                <td class="bad">Własna implementacja</td>
+                <td class="warn">Własna implementacja</td>
+                <td class="good">store + outbox</td>
+              </tr>
+              <tr>
                 <td>Dostępność</td>
                 <td class="warn">Ręczne ARIA</td>
                 <td class="warn">Ręczne accessibility props</td>
@@ -774,23 +986,27 @@
         </div>
 
         <div class="proof" style="margin-top:24px">
-          <h3>Jak to tłumaczyć naukowo</h3>
+          <h3>Jak bronić tych liczb przed recenzentami</h3>
           <ul>
             <li>
-              <strong>Redukcja linii nie jest celem samym w sobie.</strong> Celem jest redukcja przypadków
-              zmiany, duplikacji i błędów integracji między warstwami.
+              <strong>Redukcja linii nie jest celem samym w sobie.</strong> Celem jest redukcja przypadków zmiany,
+              duplikacji i błędów integracji między warstwami.
             </li>
             <li>
               <strong>AXCode eliminuje trzy źródła boilerplate’u:</strong> ręczną synchronizację UI ze stanem,
               powtarzalną konfigurację dostępności oraz glue code między danymi, widokiem i nawigacją.
             </li>
             <li>
-              <strong>Kompilator przenosi błędy z runtime’u do czasu kompilacji.</strong> Nieznany ekran,
-              zły typ pola, brak etykiety dostępności albo zapis sekretu w niezabezpieczonym store są wykrywane wcześniej.
+              <strong>Kompilator przenosi błędy z runtime’u do czasu kompilacji.</strong> Nieznany ekran, zły typ
+              pola, brak etykiety dostępności albo zapis sekretu w niezabezpieczonym store są wykrywane wcześniej.
             </li>
             <li>
               <strong>Nie ma darmowej abstrakcji.</strong> AXCode zmniejsza kod aplikacji, ale zwiększa złożoność
               kompilatora i runtime’u. To świadomy trade-off: złożoność przenosimy z milionów aplikacji do jednego narzędzia.
+            </li>
+            <li>
+              <strong>AXBridge jest dowodem empirycznym.</strong> Nie musimy wierzyć w model redukcji — możemy
+              porównać działającą aplikację referencyjną z równoważną implementacją w HTML/CSS/JS i React Native.
             </li>
           </ul>
         </div>
@@ -800,7 +1016,7 @@
     <section id="kompilator">
       <div class="shell">
         <div class="section-head">
-          <span class="pill">Kompilator</span>
+          <span class="tag">Kompilator</span>
           <h2>Jeden front-end. Wiele backendów.</h2>
           <p>
             AXCode nie tłumaczy tekstu bezpośrednio na Swift, Kotlin czy JavaScript. Najpierw tworzy neutralną
@@ -869,10 +1085,105 @@ AXIR ──► platformowo-neutralny graf aplikacji
           <article class="card">
             <h3>Podgląd na żywo</h3>
             <p>
-              Dev server pokazuje ten sam ekran jako iPhone, Android, tablet i desktop, z możliwością
-              symulacji trybu ciemnego, dużego tekstu, redukcji ruchu i czytnika ekranu.
+              Dev server pokazuje ten sam ekran jako iPhone, Android, tablet i desktop, z możliwością symulacji
+              trybu ciemnego, dużego tekstu, redukcji ruchu i czytnika ekranu.
             </p>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="axbridge">
+      <div class="shell">
+        <div class="section-head">
+          <span class="tag">AXBridge 1.5.1</span>
+          <h2>Aplikacja referencyjna AXCode.</h2>
+          <p>
+            AXBridge to nie demo składni. To kompletny produkt dostępnościowy, który dowodzi, że AXCode wystarcza
+            do zbudowania aplikacji z kontami, mediami, AI, offline, bezpieczeństwem i trybem alarmowym.
+          </p>
+        </div>
+
+        <div class="split">
+          <div>
+            <div class="grid grid-2">
+              <article class="card">
+                <h3>Komunikacja</h3>
+                <p>
+                  Rozmowy 1:1 i grupowe, wiadomości tekstowe, głosowe, obrazowe, wideo, pliki audio,
+                  odpowiedzi, statusy dostarczenia i kolejka offline.
+                </p>
+              </article>
+
+              <article class="card">
+                <h3>Dostępność</h3>
+                <p>
+                  Onboarding persona-aware, Morse, mowa, język migowy, alerty dźwiękowe, wibracje,
+                  tryb uproszczony, hardware switch i czytniki ekranu.
+                </p>
+              </article>
+
+              <article class="card">
+                <h3>Bezpieczeństwo</h3>
+                <p>
+                  E2EE, safety numbers, weryfikacja QR, zaszyfrowane media, zaszyfrowane klucze, recovery
+                  codes i ochrona przed atakiem MITM.
+                </p>
+              </article>
+
+              <article class="card">
+                <h3>AI</h3>
+                <p>
+                  Bring Your Own AI: użytkownik wybiera dostawcę LLM, tłumacza, STT, TTS lub generatora muzyki.
+                  Klucze API są szyfrowane lokalnie.
+                </p>
+              </article>
+            </div>
+          </div>
+
+          <div class="code-window">
+            <div class="window-bar">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+              <span class="file-name">AXBridge — warstwa produkcyjna</span>
+            </div>
+
+<pre><span class="com">// Kolejka offline przetrwa restart aplikacji</span>
+<span class="kw">store</span> outbox local encrypted
+  list OutboxItem
+  key <span class="str">"axbridge.outbox.v6"</span>
+
+<span class="kw">function</span> <span class="fn">enqueueOutbox</span>(
+  conversationId Text,
+  kind Text,
+  plaintext Text,
+  mediaRef Text?
+)
+  <span class="kw">set</span> ciphertext = <span class="fn">encryptForPeer</span>(peerId, plaintext)
+
+  <span class="fn">add</span> OutboxItem(
+    id = <span class="fn">newId</span>(),
+    idempotencyKey = <span class="fn">newId</span>(),
+    conversationId = conversationId,
+    kind = kind,
+    ciphertext = ciphertext,
+    mediaRef = mediaRef,
+    attempts = <span class="num">0</span>,
+    status = <span class="str">"pending"</span>
+  ) <span class="kw">to</span> outbox
+
+  <span class="fn">save</span> outbox
+  <span class="fn">kickQueue</span>()
+
+<span class="kw">when</span> isOnline changes <span class="kw">to</span> true
+  <span class="fn">flushQueueOnReconnect</span>()
+
+<span class="com">// Rozpoznany język migowy nie jest wysyłany automatycznie</span>
+<span class="kw">button</span> <span class="str">"Akceptuj i wyślij"</span>
+  <span class="kw">when</span> tapped
+    <span class="fn">sendSign</span>(selectedCandidate, signConfidence)</pre>
+          </div>
         </div>
       </div>
     </section>
@@ -880,7 +1191,7 @@ AXIR ──► platformowo-neutralny graf aplikacji
     <section id="specyfikacja">
       <div class="shell">
         <div class="section-head">
-          <span class="pill">Specyfikacja</span>
+          <span class="tag">Specyfikacja</span>
           <h2>Pełna specyfikacja języka AXCode</h2>
           <p>
             Poniższa specyfikacja opisuje minimalny, spójny core języka. Rozszerzenia platformowe są opcjonalne
@@ -888,13 +1199,13 @@ AXIR ──► platformowo-neutralny graf aplikacji
           </p>
         </div>
 
-        <div class="grid grid-2">
+        <div class="grid grid-3">
           <article class="card">
             <h3>1. Jednostki programu</h3>
             <p>
               Podstawowymi jednostkami są <code>app</code>, <code>screen</code>, <code>component</code>,
-              <code>data</code>, <code>store</code>, <code>theme</code>, <code>api</code> i <code>test</code>.
-              Plik `.ax` może zawierać całą aplikację albo jeden moduł.
+              <code>data</code>, <code>enum</code>, <code>store</code>, <code>theme</code>, <code>api</code>
+              i <code>test</code>.
             </p>
           </article>
 
@@ -902,8 +1213,8 @@ AXIR ──► platformowo-neutralny graf aplikacji
             <h3>2. Typy</h3>
             <p>
               Wbudowane typy: <code>Text</code>, <code>Number</code>, <code>Boolean</code>, <code>Date</code>,
-              <code>List&lt;T&gt;</code>, <code>Json</code>, <code>File</code> oraz typy opcjonalne z sufiksem
-              <code>?</code>. Typy własne definiuje się przez <code>data</code> i <code>enum</code>.
+              <code>List&lt;T&gt;</code>, <code>Json</code>, <code>File</code> oraz typy opcjonalne
+              <code>T?</code>.
             </p>
           </article>
 
@@ -920,8 +1231,8 @@ AXIR ──► platformowo-neutralny graf aplikacji
             <h3>4. Zdarzenia</h3>
             <p>
               Zdarzenia mają formę <code>when tapped</code>, <code>when changed</code>,
-              <code>when screen appears</code>, <code>when valid</code> i <code>when error</code>.
-              Efekty uboczne są jawne.
+              <code>when screen appears</code>, <code>when valid</code>, <code>when error</code>
+              i <code>when app launches</code>.
             </p>
           </article>
 
@@ -952,7 +1263,7 @@ AXIR ──► platformowo-neutralny graf aplikacji
           <article class="card">
             <h3>8. Motywy</h3>
             <p>
-              Motyw definiuje kolory, promienie, cienie, typografię i tryb jasny/ciemny. Motyw może następować
+              Motyw definiuje kolory, promienie, cienie, typografię i tryb jasny/ciemny. Może następować
               za ustawieniami systemu lub być wymuszony przez aplikację.
             </p>
           </article>
@@ -973,55 +1284,22 @@ AXIR ──► platformowo-neutralny graf aplikacji
               <code>store</code> obsługuje offline-first, szyfrowanie i synchronizację.
             </p>
           </article>
-        </div>
 
-        <div class="code-window" style="margin-top:26px">
-          <div class="window-bar">
-            <span class="dot red"></span>
-            <span class="dot yellow"></span>
-            <span class="dot green"></span>
-            <span class="file-name">axbridge.ax — fragment produkcyjny</span>
-          </div>
+          <article class="card">
+            <h3>11. Uprawnienia</h3>
+            <p>
+              Kamera, mikrofon, lokalizacja, powiadomienia i dane biometryczne mają jawny model zgód.
+              Zgoda jest odwoływalna i audytowalna.
+            </p>
+          </article>
 
-<pre><span class="kw">enum</span> Channel
-  text
-  speech
-  morse
-  sign
-
-<span class="kw">data</span> AccessibilityProfile
-  preferredInput Channel
-  preferredOutput Channel
-  morseWpm Number
-  vibrationStrength Number
-  textScale Number
-  highContrast Boolean
-  reduceMotion Boolean
-  confirmBeforeSend Boolean
-
-<span class="kw">store</span> profile local
-  single AccessibilityProfile
-  key <span class="str">"axbridge.profile"</span>
-
-<span class="kw">screen</span> Chat
-  title <span class="str">"Rozmowa"</span>
-
-  <span class="kw">state</span> draft Text = <span class="str">""</span>
-  <span class="kw">state</span> inputMode Channel = profile.preferredInput
-
-  <span class="kw">column</span>
-    list messages
-      item message
-        messageBubble(message)
-
-    <span class="kw">if</span> inputMode is Channel.sign
-      cameraPreview
-        accessibility label <span class="str">"Kamera rozpoznawania języka migowego"</span>
-
-      button <span class="str">"Akceptuj i wyślij"</span>
-        <span class="kw">when</span> tapped
-          <span class="com">// AI proponuje, człowiek potwierdza.</span>
-          <span class="fn">sendSign</span>(selectedCandidate, signConfidence)</pre>
+          <article class="card">
+            <h3>12. Testy</h3>
+            <p>
+              Testy jednostkowe, integracyjne, UI i dostępności są częścią języka. Test może opisywać stan
+              początkowy, akcję użytkownika i oczekiwany wynik.
+            </p>
+          </article>
         </div>
       </div>
     </section>
@@ -1029,22 +1307,22 @@ AXIR ──► platformowo-neutralny graf aplikacji
     <section id="plan">
       <div class="shell">
         <div class="section-head">
-          <span class="pill">Plan</span>
-          <h2>Od parsera do produktu.</h2>
+          <span class="tag">Plan</span>
+          <h2>Od działającej bety do produktu rynkowego.</h2>
           <p>
-            AXCode nie powstaje jako „cały ekosystem od pierwszego dnia”. Najpierw web renderer i diagnostyka,
-            potem natywne platformy, na końcu narzędzia wizualne i AI.
+            AXBridge zmienia plan rozwoju AXCode: nie zaczynamy od teorii, tylko od działającej aplikacji
+            referencyjnej, która wskazuje, czego kompilator naprawdę potrzebuje.
           </p>
         </div>
 
         <div class="roadmap">
           <article class="phase">
-            <div class="phase-tag">MVP</div>
+            <div class="phase-tag">Beta</div>
             <div>
-              <h3>0–6 miesięcy</h3>
+              <h3>Obecny etap — AXBridge 1.5.1</h3>
               <p>
-                Lexer, parser, AST, type checker, AXIR, web renderer, podstawowe komponenty, hot reload,
-                komunikaty błędów PL/EN i testy. Technologie: Rust, TypeScript, Wasm, Playwright.
+                Działający AXCode, aplikacja AXBridge, konta, E2EE, offline queue, Morse, STT, TTS, muzyka,
+                społeczności, TikTak, tryb Pomoc, safety numbers i backend Cloudflare.
               </p>
             </div>
           </article>
@@ -1052,10 +1330,10 @@ AXIR ──► platformowo-neutralny graf aplikacji
           <article class="phase">
             <div class="phase-tag">1.0</div>
             <div>
-              <h3>6–14 miesięcy</h3>
+              <h3>Stabilny język i kompilator</h3>
               <p>
-                iOS i Android, nawigacja, formularze, motywy, lokalne dane, eksport projektów Xcode i Android Studio,
-                pełny Language Server oraz stabilne API języka.
+                Zamrożenie core składni, pełny type checker, stabilne AXIR, natywne backendy iOS i Android,
+                Language Server, publikacja specyfikacji oraz niezależne testy bezpieczeństwa.
               </p>
             </div>
           </article>
@@ -1063,10 +1341,10 @@ AXIR ──► platformowo-neutralny graf aplikacji
           <article class="phase">
             <div class="phase-tag">2.0</div>
             <div>
-              <h3>12–24 miesiące</h3>
+              <h3>Produkcja i skala</h3>
               <p>
-                Animacje, offline-first, API, synchronizacja, testy UI, profilowanie wydajności, lokalizacja,
-                integracje systemowe i niezależny audyt bezpieczeństwa.
+                Ciągłe tłumaczenie języka migowego, personalizowane modele on-device, API instytucjonalne,
+                pełny offline mesh, audyt dostępności, SLA i monitoring produkcyjny.
               </p>
             </div>
           </article>
@@ -1074,10 +1352,10 @@ AXIR ──► platformowo-neutralny graf aplikacji
           <article class="phase">
             <div class="phase-tag">3.0</div>
             <div>
-              <h3>18–30 miesięcy</h3>
+              <h3>Ekosystem</h3>
               <p>
-                Wizualny edytor, sklep komponentów, współpraca zespołowa, pluginy oraz asystent AI generujący
-                ekrany z opisu — zawsze jako reviewowalny kod AXCode, nie nieznany blob.
+                Wizualny edytor, sklep komponentów, współpraca zespołowa, pluginy i asystent AI generujący
+                reviewowalny kod AXCode — nigdy nieznany blob.
               </p>
             </div>
           </article>
@@ -1088,7 +1366,7 @@ AXIR ──► platformowo-neutralny graf aplikacji
     <section>
       <div class="shell">
         <div class="section-head">
-          <span class="pill">Dla recenzentów</span>
+          <span class="tag">Dla recenzentów</span>
           <h2>Dlaczego to jest wykonalne.</h2>
           <p>
             AXCode nie wymaga wynalezienia nowej fizyki. Składa się z dobrze znanych, sprawdzalnych elementów:
@@ -1133,7 +1411,7 @@ AXIR ──► platformowo-neutralny graf aplikacji
       </div>
 
       <div>
-        Specyfikacja koncepcyjna · iOS · Android · Web<br />
+        Dowód działania: <strong>AXBridge 1.5.1-production</strong><br />
         axcode.vercel.app
       </div>
     </div>
