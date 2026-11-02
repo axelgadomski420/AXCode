@@ -1,1499 +1,1789 @@
-app "AXCode — strona języka"
-version "2.0.0"
+app "AXCode — podręcznik i kompilator"
+version "3.0.0"
 language pl
-supports ios android web
+supports ios android web desktop
 orientation automatic
-entry Start
+offline first
+entry Podrecznik
 
-theme dark
+// ============================================================================
+// AXCODE — PODRĘCZNIK PEŁNY + KOMPILATOR W APLIKACJI
+//
+// Ten plik jest jednocześnie:
+//   1. Kompletną specyfikacją języka, dwujęzyczną (polski i angielski).
+//   2. Działającym kompilatorem, który przyjmuje DOWOLNY plik .ax.
+//   3. Korpusem uczącym: bot czyta regułę, widzi przykład i kontrprzykład
+//      z kodem błędu, więc uczy się bez metod prób i błędów.
+//
+// Struktura każdej reguły jest stała:
+//   REGUŁA (PL + EN) → SKŁADNIA → PRZYKŁAD POPRAWNY → PRZYKŁAD BŁĘDNY
+//   → KOD BŁĘDU, KTÓRY ZGŁOSI KOMPILATOR → POPRAWKA
+//
+// Dzięki stałej strukturze da się to przejść jak indeks, nie jak prozę.
+//
+// Autor: Axel G · https://www.instagram.com/axelgadomski
+// ============================================================================
+
+theme default
   follows system
 
-  color primary #7C3AED
-  color primary2 #A855F7
-  color accent #06B6D4
+  color primary #4F46E5
+  color primaryDeep #312E81
+  color accent #22D3EE
+  color accentWarm #FBBF24
   color danger #EF4444
-  color success #22C55E
+  color success #10B981
   color warning #F59E0B
 
-  color background dark #060608
-  color surface dark #131316
-  color surface2 dark #1C1C21
-  color text dark #FAFAFA
-  color muted dark #A1A1AA
-  color border dark #27272A
+  color background light #F7F8FC
+  color background dark #07080F
+  color surface light #FFFFFF
+  color surface dark #0E1018
+  color surfaceRaised light #FFFFFF
+  color surfaceRaised dark #161A26
+  color codeBg light #F1F3FA
+  color codeBg dark #0A0C14
+
+  color text light #0B0C14
+  color text dark #F3F5FF
+  color muted light #575E78
+  color muted dark #8C93B2
+  color border light #E4E7F2
+  color border dark #232838
 
   radius small 10
-  radius medium 18
-  radius large 30
+  radius medium 16
+  radius large 24
   radius full 999
 
   font body "Inter"
   font mono "JetBrains Mono"
+  font display "Space Grotesk"
 
-  shadow card 0 24 70 #0000006B
+  shadow soft 0 2 6 #00000012
+  shadow medium 0 8 30 #0000002A
+  shadow glow 0 0 28 #4F46E544
 
-style hero
-  font size 72
-  weight black
-  line height 0.96
-  letter spacing -4
-
-style heroAccent
-  font size 72
-  weight black
-  line height 0.96
-  letter spacing -4
-  color theme.accent
-
-style h1
-  font size 44
-  weight black
-  line height 1.03
-  letter spacing -2
-
-style h2
-  font size 28
+style display
+  font display
+  font size 38
   weight bold
-  line height 1.1
-  letter spacing -1
+  line height 1.06
+  letter spacing -1.1
 
-style h3
-  font size 20
+style title
+  font display
+  font size 25
+  weight bold
+  letter spacing -0.5
+
+style heading
+  font display
+  font size 18
   weight semibold
-  line height 1.2
-
-style subheading
-  font size 17
-  weight semibold
-
-style lead
-  font size 20
-  color theme.muted
-  line height 1.6
 
 style body
   font size 16
   line height 1.6
 
+style bodyEn
+  font size 15
+  line height 1.6
+  color theme.muted
+
 style caption
   font size 13
   color theme.muted
+  line height 1.5
 
-style tag
+style overline
+  font size 11
+  weight semibold
+  letter spacing 1.6
+  color theme.accent
+
+style code
+  font mono
+  font size 13
+  line height 1.55
+  background theme.codeBg
+  radius medium
+  padding 16
+
+style codeBad
+  font mono
+  font size 13
+  line height 1.55
+  background theme.codeBg
+  radius medium
+  padding 16
+  border 1 theme.danger
+
+style codeGood
+  font mono
+  font size 13
+  line height 1.55
+  background theme.codeBg
+  radius medium
+  padding 16
+  border 1 theme.success
+
+style mono
+  font mono
+  font size 13
+
+style pill
+  background theme.surfaceRaised
+  radius full
+  padding 8 14
+  border 1 theme.border
+
+style pillActive
   background theme.primary
   color white
   radius full
   padding 8 14
-  font size 12
-  weight bold
+  weight semibold
 
 style badge
-  background theme.success
+  background theme.primary
   color white
   radius full
-  padding 8 16
-  font size 13
+  padding 5 12
   weight bold
+  font size 12
 
-style metric
-  font size 42
-  weight black
-  letter spacing -2
+style badgeErr
+  background theme.danger
+  color white
+  radius full
+  padding 5 12
+  weight bold
+  font size 12
 
-style card
-  background theme.surface
-  radius large
-  padding 28
+style badgeOk
+  background theme.success
+  color #04140D
+  radius full
+  padding 5 12
+  weight bold
+  font size 12
 
-style cardAccent
-  background theme.surface2
-  radius large
-  padding 28
-
-style codeWindow
-  background #0A0A0D
-  radius large
-  padding 26
-  font mono
-  font size 13
-
-style codeLine
-  font mono
-  font size 13
-  color #E4E4E7
-
-style architecture
-  background #0A0A0D
-  radius large
-  padding 32
-  font mono
-  font size 13
+style badgeWarn
+  background theme.warning
+  color #1A1200
+  radius full
+  padding 5 12
+  weight bold
+  font size 12
 
 style buttonPrimary
   background theme.primary
   color white
-  radius full
-  padding 14 24
-  weight bold
+  radius medium
+  padding 16 22
+  shadow glow
+  weight semibold
+
+style buttonSecondary
+  background theme.surfaceRaised
+  color theme.text
+  radius medium
+  padding 16 22
+  border 1 theme.border
+  weight semibold
 
 style buttonGhost
-  background theme.surface
-  color theme.text
-  radius full
-  padding 14 24
-  weight bold
-
-style buttonTab
-  background theme.surface
-  color theme.muted
+  background transparent
+  color theme.accent
   radius medium
-  padding 10 18
+  padding 12 16
 
-style buttonTabActive
-  background theme.primary
-  color white
-  radius medium
-  padding 10 18
-
-style navBar
-  background theme.background
-  padding 16 24
-
-style pill
+style card
   background theme.surface
-  color theme.text
-  radius full
-  padding 8 16
-  font size 13
+  radius large
+  padding 20
+  shadow medium
 
-enum StageState
-  done
-  planned
+style cardRaised
+  background theme.surfaceRaised
+  radius large
+  padding 20
+  border 1 theme.border
 
-data Feature
+style divider
+  background theme.border
+  height 1
+
+// ============================================================================
+// GRAMATYKA FORMALNA — zapis w notacji EBNF
+//
+// To jest kontrakt, nie opis. Parser implementuje dokładnie te reguły.
+// Każdy symbol nieterminalny ma odpowiednik w kodzie parsera.
+// Każdy terminal ma regułę leksera.
+// ============================================================================
+
+data GrammarRule
+  id Text
+  nonterminal Text
+  production Text
+  notePl Text
+  noteEn Text
+
+data RuleSet
   id Text
   number Text
-  title Text
-  detail Text
+  titlePl Text
+  titleEn Text
+  rulePl Text
+  ruleEn Text
+  syntax Text
+  goodPl Text
+  goodEn Text
+  goodCode Text
+  badCode Text
+  errorCode Text
+  errorName Text
+  fixPl Text
+  fixEn Text
 
-data Metric
-  id Text
-  value Text
-  label Text
-
-data SyntaxBlock
-  id Text
-  label Text
-  lines List<Text>
-
-data Layer
-  id Text
-  index Number
-  name Text
-  detail Text
-
-data ErrorClass
-  id Text
-  range Text
-  name Text
-
-data Pitfall
-  id Text
-  title Text
-  detail Text
-
-data Stage
-  id Text
-  version Text
-  title Text
-  detail Text
-  state StageState
-
-data NavItem
-  id Text
-  label Text
-  target Text
-
-
-data Citation
-  id Text
-  authors Text
-  year Text
-  title Text
-  source Text
-  identifier Text
-
-data MethodStep
-  id Text
-  index Number
-  action Text
-  purpose Text
-  artifact Text
-
-data Measure
-  id Text
-  name Text
-  value Text
-  unit Text
-  sample Text
-
-data Limitation
-  id Text
-  area Text
-  detail Text
-  mitigation Text
-
-data Hypothesis
+data ErrorRow
   id Text
   code Text
-  statement Text
-  verdictText Text
-  evidence Text
+  rangePl Text
+  rangeEn Text
+  sample Text
+  causePl Text
+  causeEn Text
+  fixPl Text
+  fixEn Text
 
-store content local
-  list Feature
-  key "axcode.site.features.v2"
+data TrapRow
+  id Text
+  trapPl Text
+  trapEn Text
+  wrongCode Text
+  rightCode Text
+  whyPl Text
+  whyEn Text
 
-store metrics local
-  list Metric
-  key "axcode.site.metrics.v2"
+data Lexeme
+  id Text
+  kind Text
+  pattern Text
+  example Text
+  notePl Text
+  noteEn Text
 
-store syntax local
-  list SyntaxBlock
-  key "axcode.site.syntax.v2"
+store grammar local
+  list GrammarRule
+  key "axcode.grammar.v3"
 
-store layers local
-  list Layer
-  key "axcode.site.layers.v2"
+store rules local
+  list RuleSet
+  key "axcode.rules.v3"
 
 store errors local
-  list ErrorClass
-  key "axcode.site.errors.v2"
+  list ErrorRow
+  key "axcode.errors.v3"
 
-store pitfalls local
-  list Pitfall
-  key "axcode.site.pitfalls.v2"
+store traps local
+  list TrapRow
+  key "axcode.traps.v3"
 
-store stages local
-  list Stage
-  key "axcode.site.stages.v2"
+store lexemes local
+  list Lexeme
+  key "axcode.lexemes.v3"
 
-store citations local
-  list Citation
-  key "axcode.site.citations.v3"
+global state langMode Text = "both"
+global state section Text = "gramatyka"
+global state openRuleId Text = ""
+global state announceText Text = ""
 
-store method local
-  list MethodStep
-  key "axcode.site.method.v3"
+function newId() returns Text
+  return "g_" + timestampMs() + "_" + randomToken(8)
 
-store measures local
-  list Measure
-  key "axcode.site.measures.v3"
+function announceLocal(text Text)
+  set announceText = text
+  announce(text)
 
-store limitations local
-  list Limitation
-  key "axcode.site.limitations.v3"
+function announceImportant(text Text)
+  set announceText = text
+  announceUrgent(text)
 
-store hypotheses local
-  list Hypothesis
-  key "axcode.site.hypotheses.v3"
+function toggleRule(id Text)
+  if openRuleId is id
+    set openRuleId = ""
+    announceLocal("Zamknięto regułę.")
+  else
+    set openRuleId = id
+    announceLocal("Otwarto regułę z przykładami.")
+
+function cycleLangMode()
+  if langMode is "both"
+    set langMode = "pl"
+  else if langMode is "pl"
+    set langMode = "en"
+  else
+    set langMode = "both"
+  announceLocal("Tryb języka podręcznika: " + langMode)
 
 
-global state currentScreen Text = "Start"
-global state expandedBlock Text = ""
-global state showSource Boolean = false
-global state sourceText Text = ""
-global state compileStatus Text = "Gotowy do kompilacji."
-global state clipboardText Text = ""
-global state compileFindings List<Text> = []
-global state compiledAst Json = none
+// ============================================================================
+// GRAMATYKA — pełny zapis w EBNF
+// ============================================================================
 
-function loadContent()
-  set features = [
-    Feature(id = "f1", number = "01", title = "Jeden ekran = jeden blok", detail = "Ekran zawiera własny stan, layout, zdarzenia i nawigację. Nie skaczesz między plikiem widoku, stylów, stanu i logiki."),
-    Feature(id = "f2", number = "02", title = "Reaktywność bez glue code'u", detail = "Zmiana stanu sama aktualizuje interfejs. Bez ręcznej synchronizacji drzewa dokumentu i bez cyklu życia komponentu."),
-    Feature(id = "f3", number = "03", title = "Bezpieczeństwo w modelu danych", detail = "Magazyn deklaruje klasę przechowywania. Zapis sekretu w magazynie jawnym jest błędem kompilacji, nie błędem w produkcji."),
-    Feature(id = "f4", number = "04", title = "Dostępność w semantyce", detail = "Obraz bez tekstu alternatywnego, pole bez etykiety, przycisk ikonowy bez etykiety — kompilator tego nie przepuści.")
+function loadGrammar()
+  set grammar = [
+    GrammarRule(id = "gr1", nonterminal = "Plik", production = "Plik = { Sekcja } ;", notePl = "Plik składa się z dowolnej liczby sekcji. Kolejność jest dowolna.", noteEn = "A file is any number of sections. Order is free."),
+    GrammarRule(id = "gr2", nonterminal = "Sekcja", production = "Sekcja = Naglowek, { LiniaTresci } ;", notePl = "Sekcja to nagłówek, a pod nim linie o głębszym wcięciu.", noteEn = "A section is a header plus lines indented deeper."),
+    GrammarRule(id = "gr3", nonterminal = "Naglowek", production = "Naglowek = "app" | "theme" | "style" | "enum" | "data" | "store" | "global", "state" | "permission" | "api" | "function" | "component" | "screen" | "test" ;", notePl = "Trzynaście słów rozpoczyna sekcję najwyższego poziomu.", noteEn = "Thirteen keywords open a top-level section."),
+    GrammarRule(id = "gr4", nonterminal = "Wciecie", production = "Wciecie = { Spacja | Tabulator } ;", notePl = "Tabulator ma szerokość dwóch spacji. Mieszanie tabulatorów i spacji w jednej linii to błąd AX1005.", noteEn = "A tab counts as two spaces. Mixing tabs and spaces in one line is error AX1005."),
+    GrammarRule(id = "gr5", nonterminal = "Typ", production = "Typ = TypProsty | "List", "<", Typ, ">" | "Map", "<", Typ, ",", Typ, ">" | Nazwa, ["?"] ;", notePl = "Znak zapytania po typie oznacza wartość opcjonalną. List i Map można zagnieżdżać.", noteEn = "A question mark marks an optional value. List and Map nest."),
+    GrammarRule(id = "gr6", nonterminal = "TypProsty", production = "TypProsty = "Text" | "Number" | "Boolean" | "Date" | "Duration" | "Json" | "File" | "Image" | "Video" | "Audio" | "Location" ;", notePl = "Jedenaście typów wbudowanych.", noteEn = "Eleven built-in types."),
+    GrammarRule(id = "gr7", nonterminal = "Stan", production = "Stan = "state", Nazwa, Typ, ["=", Wyrazenie] ;", notePl = "Stan lokalny ekranu. Wymaga typu. Wartość początkowa jest opcjonalna.", noteEn = "Local screen state. Type required, initial value optional."),
+    GrammarRule(id = "gr8", nonterminal = "StanGlobalny", production = "StanGlobalny = "global", "state", Nazwa, Typ, "=", Wyrazenie ;", notePl = "Stan globalny wymaga wartości początkowej. Bez niej kompilator zgłasza AX4002.", noteEn = "Global state requires an initial value. Without it the compiler reports AX4002."),
+    GrammarRule(id = "gr9", nonterminal = "Instrukcja", production = "Instrukcja = Przypisanie | Dodanie | Usuniecie | Aktualizacja | ZapisMagazynu | Nawigacja | Zwrot | Wywolanie | Ogloszenie ;", notePl = "Dziewięć rodzajów instrukcji w logice.", noteEn = "Nine statement kinds in logic."),
+    GrammarRule(id = "gr10", nonterminal = "Przypisanie", production = "Przypisanie = "set", Sciezka, "=", Wyrazenie ;", notePl = "Przypisanie zmienia stan albo zawartość magazynu.", noteEn = "Assignment changes state or store content."),
+    GrammarRule(id = "gr11", nonterminal = "Dodanie", production = "Dodanie = "add", Wyrazenie, "to", Nazwa ;", notePl = "Dodaje element na koniec listy. Cel musi być magazynem listy.", noteEn = "Appends to a list store. The target must be a list store."),
+    GrammarRule(id = "gr12", nonterminal = "Usuniecie", production = "Usuniecie = "remove", Wyrazenie, "from", Nazwa ;", notePl = "Usuwa element z listy. Brak magazynu w instrukcji to błąd AX1006.", noteEn = "Removes from a list. Missing store is error AX1006."),
+    GrammarRule(id = "gr13", nonterminal = "ZapisMagazynu", production = "ZapisMagazynu = ("save" | "load" | "clear"), Nazwa ;", notePl = "Trzy operacje na całym magazynie.", noteEn = "Three whole-store operations."),
+    GrammarRule(id = "gr14", nonterminal = "Nawigacja", production = "Nawigacja = "go", "to", Nazwa, ["(", Argumenty, ")"] | "go", "back" ;", notePl = "Cel nawigacji musi istnieć i przyjmować dokładnie tyle argumentów, ile podano.", noteEn = "The target must exist and take exactly the arguments given."),
+    GrammarRule(id = "gr15", nonterminal = "Zwrot", production = "Zwrot = "return", [ Wyrazenie ] ;", notePl = "Funkcja bez zadeklarowanego typu zwracanego nie może użyć return.", noteEn = "A function without a declared return type cannot use return."),
+    GrammarRule(id = "gr16", nonterminal = "Wywolanie", production = "Wywolanie = Nazwa, "(", [ Argumenty ], ")" ;", notePl = "Liczba argumentów musi zgadzać się z deklaracją funkcji.", noteEn = "Argument count must match the function declaration."),
+    GrammarRule(id = "gr17", nonterminal = "Warunek", production = "Warunek = "if", Wyrazenie, Blok, [ "else", Blok ] ;", notePl = "Dopuszczalny jeden poziom else. Zagnieżdżanie przez kolejny if.", noteEn = "One else level. Nest with another if."),
+    GrammarRule(id = "gr18", nonterminal = "Petla", production = "Petla = "for", Nazwa, "in", Wyrazenie, Blok ;", notePl = "Pętla istnieje w logice. W interfejsie listy są deklaratywne przez list i item.", noteEn = "Loops exist in logic. In UI, lists are declarative."),
+    GrammarRule(id = "gr19", nonterminal = "ObslugaBledu", production = "ObslugaBledu = "try", Blok, "catch", Nazwa, Blok, [ "finally", Blok ] ;", notePl = "Operacja sieciowa bez catch to błąd AX5004.", noteEn = "A network call without catch is error AX5004."),
+    GrammarRule(id = "gr20", nonterminal = "Zdarzenie", production = "Zdarzenie = "when", NazwaZdarzenia, Blok ;", notePl = "Dwanaście nazw zdarzeń. Nieznana nazwa to błąd AX3004.", noteEn = "Twelve event names. An unknown name is error AX3004."),
+    GrammarRule(id = "gr21", nonterminal = "Element", production = "Element = Kontener | Tekst | Przycisk | Pole | Obraz | Wybor | Media | Odstep | WywolanieKomponentu ;", notePl = "Dziewięć rodzajów elementów interfejsu.", noteEn = "Nine UI element kinds."),
+    GrammarRule(id = "gr22", nonterminal = "Kontener", production = "Kontener = ("column" | "row" | "grid" | "card" | "scroll"), { Akcesorium }, { Element } ;", notePl = "Pięć kontenerów. Akcesoria podaje się bezpośrednio pod kontenerem, przed dziećmi.", noteEn = "Five containers. Accessories go right under the container, before children."),
+    GrammarRule(id = "gr23", nonterminal = "Lista", production = "Lista = "list", Zrodlo, "empty", Blok, "item", Nazwa, Blok ;", notePl = "Gałąź empty jest wymagana. Lista bez empty to błąd AX3006.", noteEn = "The empty branch is required. A list without it is error AX3006."),
+    GrammarRule(id = "gr24", nonterminal = "Obraz", production = "Obraz = "image", Zrodlo, "alt", Tekst ;", notePl = "Obraz bez alt to błąd AX7001. Nie da się tego przeoczyć.", noteEn = "An image without alt is error AX7001. It cannot be overlooked."),
+    GrammarRule(id = "gr25", nonterminal = "Pole", production = "Pole = "field", Nazwa, "label", Tekst, { Walidacja }, [ "error", Tekst ] ;", notePl = "Pole bez label to błąd AX7003.", noteEn = "A field without label is error AX7003."),
+    GrammarRule(id = "gr26", nonterminal = "Przycisk", production = "Przycisk = "button", ( Tekst | "icon", Tekst ), [ "accessibility", "label", Tekst ], { "when", Zdarzenie } ;", notePl = "Przycisk ikonowy bez accessibility label to błąd AX7002.", noteEn = "An icon button without accessibility label is error AX7002."),
+    GrammarRule(id = "gr27", nonterminal = "Walidacja", production = "Walidacja = "required" | "min", "length", Liczba | "max", "length", Liczba | "type", ("email" | "password" | "number") ;", notePl = "Walidacja jest deklaratywna, nie pisana ręcznie.", noteEn = "Validation is declarative, not hand-written."),
+    GrammarRule(id = "gr28", nonterminal = "Magazyn", production = "Magazyn = "store", Nazwa, Klasa, { Klasa }, ("single" | "list"), Typ, "key", Tekst ;", notePl = "Klucz jest wymagany. Bez niego kompilator zgłasza AX4004.", noteEn = "The key is required. Without it the compiler reports AX4004."),
+    GrammarRule(id = "gr29", nonterminal = "Klasa", production = "Klasa = "local" | "synced" | "encrypted" | "secure" | "cache" | "queue" ;", notePl = "Sekrety muszą trafić do secure. Inaczej AX6001.", noteEn = "Secrets must go to secure. Otherwise AX6001."),
+    GrammarRule(id = "gr30", nonterminal = "Wyrazenie", production = "Wyrazenie = Literal | Sciezka | Wywolanie | Wyrazenie, Operator, Wyrazenie | "(", Wyrazenie, ")" ;", notePl = "Wyrażenia opisują wartości: literały, ścieżki do pól, wywołania funkcji i operacje.", noteEn = "Expressions describe values: literals, field paths, calls and operations.")
   ]
-  save features
+  save grammar
 
-  set metrics = [
-    Metric(id = "m1", value = "1", label = "plik .ax definiuje interfejs, stan, dane i logikę"),
-    Metric(id = "m2", value = "3", label = "platformy: iOS, Android, Web"),
-    Metric(id = "m3", value = "10", label = "warstw kompilatora w tej implementacji"),
-    Metric(id = "m4", value = "40-60%", label = "realistyczna redukcja kodu względem HTML/CSS/JS")
+  set lexemes = [
+    Lexeme(id = "lx1", kind = "Nazwa sekcji", pattern = "mała litera, potem litery i cyfry", example = "screen", notePl = "Słowo, które rozpoczyna sekcję. Zawsze z małej litery.", noteEn = "The word opening a section. Always lowercase."),
+    Lexeme(id = "lx2", kind = "Nazwa typu", pattern = "wielka litera, potem litery i cyfry", example = "ChatMessage", notePl = "Nazwy modeli, enumów i komponentów piszemy z wielkiej litery.", noteEn = "Model, enum and component names start uppercase."),
+    Lexeme(id = "lx3", kind = "Nazwa zmiennej", pattern = "mała litera, potem litery, cyfry, podkreślenie", example = "activeConversationId", notePl = "Nazwy pól, stanu i funkcji piszemy z małej litery.", noteEn = "Field, state and function names start lowercase."),
+    Lexeme(id = "lx4", kind = "Tekst", pattern = "w cudzysłowie prostym", example = "\"Rozmowa\"", notePl = "Cudzysłów prosty, nie krzywy. Krzywy cudzysłów to błąd AX1002.", noteEn = "Straight quotes only. A curly quote is error AX1002."),
+    Lexeme(id = "lx5", kind = "Liczba", pattern = "cyfry, opcjonalnie kropka i cyfry", example = "16", notePl = "Kropka jako separator dziesiętny. Przecinek nie jest akceptowany.", noteEn = "Dot as decimal separator. Comma is rejected."),
+    Lexeme(id = "lx6", kind = "Flaga", pattern = "true albo false", example = "true", notePl = "Zawsze małymi literami. True to błąd AX1003.", noteEn = "Always lowercase. True is error AX1003."),
+    Lexeme(id = "lx7", kind = "Pusta wartość", pattern = "none", example = "none", notePl = "Pusta wartość to none. null i nil to błąd AX1004.", noteEn = "Empty value is none. null and nil are error AX1004."),
+    Lexeme(id = "lx8", kind = "Kolor", pattern = "krzyżyk i sześć znaków szesnastkowych", example = "#4F46E5", notePl = "Dopuszczalny zapis trójznakowy i ośmioznakowy z kanałem alfa.", noteEn = "Three and eight digit forms allowed, eight with alpha."),
+    Lexeme(id = "lx9", kind = "Komentarz", pattern = "dwa ukośniki do końca linii", example = "// opis", notePl = "Komentarz jest pomijany przez parser i nie trafia do drzewa.", noteEn = "Comments are skipped by the parser."),
+    Lexeme(id = "lx10", kind = "Wcięcie", pattern = "spacje albo tabulatory na początku linii", example = "    ", notePl = "Wcięcie jest znaczące. Określa przynależność do bloku.", noteEn = "Indentation is significant. It defines block membership.")
   ]
-  save metrics
+  save lexemes
 
-  set syntax = [
-    SyntaxBlock(id = "s1", label = "Magazyny i klasy przechowywania", lines = [
-      "// sześć klas przechowywania",
-      "store messages      local",
-      "store research      synced",
-      "store providerKeys  secure",
-      "store imageLibrary  local encrypted",
-      "store cacheData     cache",
-      "store outbox        queue encrypted",
-      "",
-      "// klucz wersjonowany = migracja bez awarii",
-      "store images local encrypted",
-      "  list ImageAsset",
-      "  key \"app.images.v2\""
-    ]),
-    SyntaxBlock(id = "s2", label = "Warstwa API", lines = [
-      "api CloudflareApi",
-      "  base \"https://api.example.com\"",
-      "  auth bearer",
-      "  timeout 20000",
-      "  retry 3",
-      "",
-      "  function login(email Text, password Text)",
-      "    returns Json",
-      "    post \"/auth/login\"",
-      "    body { email, password }",
-      "",
-      "// limit czasu i ponawianie są częścią",
-      "// deklaracji, nie opcjonalnym parametrem"
-    ]),
-    SyntaxBlock(id = "s3", label = "Zdarzenia", lines = [
-      "when tapped",
-      "when changed value",
-      "when screen appears",
-      "when app launches",
-      "when valid",
-      "when error",
-      "when online",
-      "when offline",
-      "when permission granted",
-      "when permission denied"
-    ]),
-    SyntaxBlock(id = "s4", label = "Tryb offline", lines = [
-      "store outbox queue encrypted",
-      "  list OutboxItem",
-      "  key \"app.outbox.v1\"",
-      "",
-      "function enqueue(body Text)",
-      "  add OutboxItem(",
-      "    id = newId(),",
-      "    idempotencyKey = newId(),",
-      "    attempts = 0,",
-      "    status = pending",
-      "  ) to outbox",
-      "  save outbox",
-      "  flushOutbox()",
-      "",
-      "when isOnline changes to true",
-      "  flushOutbox()"
-    ]),
-    SyntaxBlock(id = "s5", label = "Testy", lines = [
-      "test \"Morse encoder\"",
-      "  given text \"SOS\"",
-      "  when encodeMorse(text)",
-      "  then result is \"... --- ...\"",
-      "",
-      "ui test \"Dodanie zadania\"",
-      "  open Home",
-      "  fill newTitle \"Kup mleko\"",
-      "  tap \"Dodaj\"",
-      "  expect tasks has 1 item",
-      "",
-      "accessibility test \"Logowanie\"",
-      "  open Login",
-      "  expect all fields have labels",
-      "  expect contrast passes AA"
-    ]),
-    SyntaxBlock(id = "s6", label = "Użycie kompilatora w innym projekcie", lines = [
-      "import { parse, verify, renderApp } from \"./compiler.js\"",
-      "",
-      "const ast = parse(zrodlo)           // drzewo składniowe",
-      "const findings = verify(ast)        // 11 reguł",
-      "const runtime = renderApp(ast)      // renderowanie",
-      "",
-      "runtime.apiObjects   // warstwa API z deklaracji",
-      "runtime.storeWrites  // dziennik magazynów",
-      "runtime.apiCalls     // wywołania z timeoutem"
-    ])
+
+// ============================================================================
+// REGUŁY — każda ma opis dwujęzyczny, składnię, przykład poprawny,
+// kontrprzykład błędny i kod błędu, który zgłosi kompilator.
+//
+// Ta sekcja jest korpusem uczącym: bot czyta regułę i od razu widzi,
+// jak wygląda kod poprawny oraz co dokładnie jest błędem.
+// ============================================================================
+
+function loadRules()
+  set rules = [
+    RuleSet(
+      id = "r01", number = "01",
+      titlePl = "Sekcje pliku", titleEn = "File sections",
+      rulePl = "Plik składa się z sekcji. Kolejność jest dowolna, ale zalecana to: app, theme, style, enum, data, store, global state, permission, api, function, component, screen, test.",
+      ruleEn = "A file is made of sections. Order is free; recommended: app, theme, style, enum, data, store, global state, permission, api, function, component, screen, test.",
+      syntax = "Sekcja = Naglowek, { LiniaTresci }",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "app \"Notatnik\"\nversion \"1.0.0\"\nlanguage pl\nsupports ios android web\nentry Home\n\ndata Note\n  id Text\n  body Text\n\nscreen Home\n  title \"Notatnik\"",
+      badCode = "Notatnik\n  version 1.0\n  data Note body Text",
+      errorCode = "AX1001",
+      errorName = "Nieznana deklaracja najwyższego poziomu",
+      fixPl = "Każdą sekcję rozpocznij słowem kluczowym z listy trzynastu. Nazwa aplikacji musi być w cudzysłowie.",
+      fixEn = "Start every section with one of the thirteen keywords. The app name must be quoted."
+    ),
+    RuleSet(
+      id = "r02", number = "02",
+      titlePl = "Wcięcie ma znaczenie", titleEn = "Indentation is significant",
+      rulePl = "Blok należy do nagłówka o wyższym wcięciu. Tabulator ma szerokość dwóch spacji. Nie mieszaj tabulatorów ze spacjami w jednej linii.",
+      ruleEn = "A block belongs to the header with higher indentation. A tab counts as two spaces. Do not mix tabs and spaces in one line.",
+      syntax = "Wciecie = { Spacja | Tabulator }",
+      goodPl = "Poprawnie — dwie spacje", goodEn = "Correct — two spaces",
+      goodCode = "screen Home\n  title \"Start\"\n\n  column\n    gap 16\n    text \"Witaj\"",
+      badCode = "screen Home\n\ttitle \"Start\"\n  column\n \t  gap 16",
+      errorCode = "AX1005",
+      errorName = "Mieszane wcięcie w jednej linii",
+      fixPl = "Ustaw edytor na wcięcia dwoma spacjami. Tabulator zamień na dwie spacje.",
+      fixEn = "Configure your editor for two-space indentation. Replace tabs with two spaces."
+    ),
+    RuleSet(
+      id = "r03", number = "03",
+      titlePl = "Nazwy pisane właściwą literą", titleEn = "Names use the right case",
+      rulePl = "Sekcje, pola, stan i funkcje z małej litery. Modele, enumy i komponenty z wielkiej. Nazwa typu z małej litery to ostrzeżenie, nie błąd.",
+      ruleEn = "Sections, fields, state and functions lowercase. Models, enums and components uppercase. A lowercase type name is a warning, not an error.",
+      syntax = "NazwaTypu = WielkaLitera, { Litera | Cyfra }",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "data ChatMessage\n  id Text\n  body Text\n\nfunction userCount() returns Number\n  return length(users)",
+      badCode = "data chatMessage\n  id Text\n\nfunction UserCount() returns Number\n  return 0",
+      errorCode = "AX2005",
+      errorName = "Nazwa typu zapisana małą literą",
+      fixPl = "Zmień pierwszą literę nazwy modelu, enuma i komponentu na wielką.",
+      fixEn = "Upper-case the first letter of model, enum and component names."
+    ),
+    RuleSet(
+      id = "r04", number = "04",
+      titlePl = "Tekst w cudzysłowie prostym", titleEn = "Text in straight quotes",
+      rulePl = "Tekst otaczamy prostym cudzysłowem. Krzywy cudzysłów z edytora tekstu jest błędem składni.",
+      ruleEn = "Text is wrapped in straight quotes. A curly quote from a word processor is a syntax error.",
+      syntax = "Tekst = \"\"\", { Znak }, \"\"\"",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "text \"Rozmowa\"\n  style title\n\nbutton \"Wyślij\"\n  style buttonPrimary",
+      badCode = "text „Rozmowa” \n  style title",
+      errorCode = "AX1002",
+      errorName = "Niepoprawny tekst — krzywy cudzysłów",
+      fixPl = "Zamień „ i ” na prosty cudzysłów. W edytorze wyłącz inteligentne cudzysłowy.",
+      fixEn = "Replace curly quotes with straight quotes. Disable smart quotes in your editor."
+    ),
+    RuleSet(
+      id = "r05", number = "05",
+      titlePl = "Flagi i pusta wartość", titleEn = "Booleans and empty value",
+      rulePl = "Flaga to true albo false, zawsze małymi literami. Pusta wartość to none. Pisownia True, False, null i nil to błędy.",
+      ruleEn = "A boolean is true or false, always lowercase. Empty value is none. True, False, null and nil are errors.",
+      syntax = "Flaga = \"true\" | \"false\" ; Pusta = \"none\"",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "global state isOnline Boolean = true\nglobal state draft Text = \"\"\nglobal state user Text = none",
+      badCode = "global state isOnline Boolean = True\nglobal state user Text = null",
+      errorCode = "AX1003",
+      errorName = "Niepoprawna flaga lub pusta wartość",
+      fixPl = "Zapisz true, false i none małymi literami.",
+      fixEn = "Write true, false and none in lowercase."
+    ),
+    RuleSet(
+      id = "r06", number = "06",
+      titlePl = "Stan lokalny i globalny", titleEn = "Local and global state",
+      rulePl = "Stan lokalny deklarujemy w ekranie słowem state. Stan globalny słowami global state i wymaga wartości początkowej.",
+      ruleEn = "Local state is declared with state inside a screen. Global state uses global state and requires an initial value.",
+      syntax = "Stan = \"state\", Nazwa, Typ, [ \"=\", Wyrazenie ] ; StanGlobalny = \"global\", \"state\", Nazwa, Typ, \"=\", Wyrazenie",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "global state isSignedIn Boolean = false\n\nscreen Login\n  title \"Wejdź\"\n\n  state email Text = \"\"\n  state isBusy Boolean = false",
+      badCode = "global state isSignedIn Boolean\n\nscreen Login\n  title \"Wejdź\"\n\n  email Text = \"\"",
+      errorCode = "AX4002",
+      errorName = "Stan globalny bez wartości początkowej",
+      fixPl = "Dopisz wartość po znaku równości. Stan lokalny zadeklaruj słowem state.",
+      fixEn = "Add a value after the equals sign. Declare local state with the state keyword."
+    ),
+    RuleSet(
+      id = "r07", number = "07",
+      titlePl = "Typ opcjonalny", titleEn = "Optional type",
+      rulePl = "Znak zapytania po typie oznacza, że wartość może być pusta. Pole opcjonalne można pominąć przy tworzeniu modelu.",
+      ruleEn = "A question mark after a type marks an optional value. An optional field may be omitted when building a model.",
+      syntax = "Typ = Nazwa, [ \"?\" ]",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "data User\n  id Text\n  displayName Text\n  avatarUrl Text?\n  bio Text?",
+      badCode = "data User\n  id Text\n  displayName Text\n  avatarUrl Text empty",
+      errorCode = "AX2002",
+      errorName = "Nieznany typ pola",
+      fixPl = "Opcjonalność oznaczamy znakiem zapytania po nazwie typu, nie słowem.",
+      fixEn = "Mark optionality with a question mark after the type name, not with a word."
+    ),
+    RuleSet(
+      id = "r08", number = "08",
+      titlePl = "Magazyn wymaga klucza", titleEn = "A store requires a key",
+      rulePl = "Każdy magazyn deklaruje zawartość i klucz. Klucz zawiera wersję, żeby zmiana kształtu danych nie psuła zapisanych danych.",
+      ruleEn = "Every store declares its content and a key. The key carries a version so a data shape change does not break saved data.",
+      syntax = "Magazyn = \"store\", Nazwa, Klasa, (\"single\" | \"list\"), Typ, \"key\", Tekst",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "store messages local encrypted\n  list Message\n  key \"app.messages.v2\"",
+      badCode = "store messages local\n  list Message",
+      errorCode = "AX4004",
+      errorName = "Magazyn bez klucza",
+      fixPl = "Dopisz linię key z nazwą i numerem wersji, na przykład key \"app.messages.v1\".",
+      fixEn = "Add a key line with a name and version, for example key \"app.messages.v1\"."
+    ),
+    RuleSet(
+      id = "r09", number = "09",
+      titlePl = "Sekrety tylko do magazynu secure", titleEn = "Secrets only in a secure store",
+      rulePl = "Klucze API, tokeny i dane biometryczne trafiają wyłącznie do magazynu klasy secure. Zapis sekretu w magazynie lokalnym to błąd.",
+      ruleEn = "API keys, tokens and biometric data go only to a secure store. Writing a secret to a local store is an error.",
+      syntax = "Klasa = \"secure\"",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "store providerKeys secure\n  list Text\n  key \"app.keys.v1\"",
+      badCode = "store providerKeys local\n  list Text\n  key \"app.keys.v1\"",
+      errorCode = "AX6001",
+      errorName = "Sekret w magazynie bez szyfrowania",
+      fixPl = "Zmień klasę magazynu na secure. Magazyn secure szyfruje zawartość i nie trafia do kopii zapasowej.",
+      fixEn = "Change the store class to secure. A secure store encrypts its content and is excluded from backups."
+    ),
+    RuleSet(
+      id = "r10", number = "10",
+      titlePl = "Obraz wymaga opisu", titleEn = "An image requires alt text",
+      rulePl = "Każdy obraz ma tekst alternatywny. Bez niego osoba niewidoma nie wie, co jest na ekranie. To błąd, nie ostrzeżenie.",
+      ruleEn = "Every image has alt text. Without it a blind user has no idea what is on screen. This is an error, not a warning.",
+      syntax = "Obraz = \"image\", Zrodlo, \"alt\", Tekst",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "image user.avatarUrl\n  width 96\n  height 96\n  alt \"Zdjęcie profilowe użytkownika\"",
+      badCode = "image user.avatarUrl\n  width 96\n  height 96",
+      errorCode = "AX7001",
+      errorName = "Obraz bez tekstu alternatywnego",
+      fixPl = "Dopisz linię alt z krótkim opisem tego, co widać na obrazie.",
+      fixEn = "Add an alt line with a short description of what the image shows."
+    ),
+    RuleSet(
+      id = "r11", number = "11",
+      titlePl = "Pole wymaga etykiety", titleEn = "A field requires a label",
+      rulePl = "Każde pole formularza ma etykietę. Etykieta jest czytana przez czytnik ekranu i widoczna nad polem.",
+      ruleEn = "Every form field has a label. The label is read by screen readers and shown above the field.",
+      syntax = "Pole = \"field\", Nazwa, \"label\", Tekst, { Walidacja }",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "field email\n  label \"E-mail\"\n  type email\n  required\n  error \"Podaj poprawny adres e-mail.\"",
+      badCode = "field email\n  type email\n  required",
+      errorCode = "AX7003",
+      errorName = "Pole bez etykiety",
+      fixPl = "Dopisz linię label z nazwą pola widoczną dla użytkownika.",
+      fixEn = "Add a label line with the user-visible field name."
+    ),
+    RuleSet(
+      id = "r12", number = "12",
+      titlePl = "Przycisk ikonowy wymaga nazwy", titleEn = "An icon button requires a name",
+      rulePl = "Przycisk bez widocznego tekstu musi mieć accessibility label. Inaczej czytnik ekranu ogłosi tylko słowo przycisk.",
+      ruleEn = "A button with no visible text must have an accessibility label. Otherwise screen readers announce only the word button.",
+      syntax = "Przycisk = \"button\", \"icon\", Tekst, \"accessibility\", \"label\", Tekst",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "button icon \"mic\"\n  accessibility label \"Nagraj wiadomość głosową\"\n  when tapped\n    startRecording()",
+      badCode = "button icon \"mic\"\n  when tapped\n    startRecording()",
+      errorCode = "AX7002",
+      errorName = "Przycisk ikonowy bez etykiety dostępności",
+      fixPl = "Dopisz linię accessibility label z opisem akcji, którą przycisk wykonuje.",
+      fixEn = "Add an accessibility label line describing the action the button performs."
+    ),
+    RuleSet(
+      id = "r13", number = "13",
+      titlePl = "Lista wymaga gałęzi empty", titleEn = "A list requires an empty branch",
+      rulePl = "Lista deklaruje, co pokazać, gdy jest pusta. Bez tego przy braku danych użytkownik widzi pusty ekran i nie wie, czy coś się zepsuło.",
+      ruleEn = "A list declares what to show when it is empty. Without it an empty dataset leaves a blank screen and the user cannot tell whether something broke.",
+      syntax = "Lista = \"list\", Zrodlo, \"empty\", Blok, \"item\", Nazwa, Blok",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "list messages\n  empty\n    text \"Brak wiadomości\"\n      style caption\n  item message\n    text message.body",
+      badCode = "list messages\n  item message\n    text message.body",
+      errorCode = "AX3006",
+      errorName = "Lista bez gałęzi empty",
+      fixPl = "Dopisz blok empty z krótkim komunikatem przed blokiem item.",
+      fixEn = "Add an empty block with a short message before the item block."
+    ),
+    RuleSet(
+      id = "r14", number = "14",
+      titlePl = "Nawigacja na istniejący ekran", titleEn = "Navigate to an existing screen",
+      rulePl = "Cel nawigacji musi istnieć i przyjmować dokładnie tyle argumentów, ile podano. Literówka w nazwie to błąd kompilacji.",
+      ruleEn = "The navigation target must exist and take exactly the arguments given. A typo in the name is a compile error.",
+      syntax = "Nawigacja = \"go\", \"to\", Nazwa, [ \"(\", Argumenty, \")\" ]",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "screen Home\n  title \"Start\"\n\n  button \"Otwórz profil\"\n    accessibility label \"Otwórz profil\"\n    when tapped\n      go to Home",
+      badCode = "screen Home\n  title \"Start\"\n\n  button \"Otwórz profil\"\n    accessibility label \"Otwórz profil\"\n    when tapped\n      go to Home",
+      errorCode = "AX8001",
+      errorName = "Nawigacja do nieistniejącego ekranu",
+      fixPl = "Sprawdź nazwę celu. Kompilator poda, które ekrany istnieją w pliku.",
+      fixEn = "Check the target name. The compiler lists the screens that exist in the file."
+    ),
+    RuleSet(
+      id = "r15", number = "15",
+      titlePl = "Sieć wymaga limitu, ponowień i obsługi błędu", titleEn = "Network needs a timeout, retries and error handling",
+      rulePl = "Warstwa api deklaruje limit czasu i liczbę ponowień. Wywołanie sieciowe w funkcji musi być objęte blokiem try z catch.",
+      ruleEn = "An api layer declares timeout and retry count. A network call in a function must be wrapped in a try block with catch.",
+      syntax = "ObslugaBledu = \"try\", Blok, \"catch\", Nazwa, Blok",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "function loadTasks()\n  try\n    set result = TasksApi.list()\n    set tasks = result\n  catch error\n    showError(error.message)\n\napi TasksApi\n  base \"https://api.example.com\"\n  timeout 15000\n  retry 3",
+      badCode = "function loadTasks()\n  set result = TasksApi.list()\n\napi TasksApi\n  base \"https://api.example.com\"",
+      errorCode = "AX5004",
+      errorName = "Blok try bez catch albo wywołanie sieci bez osłony",
+      fixPl = "Otocz wywołanie blokiem try z catch error. Dopisz timeout i retry w warstwie api.",
+      fixEn = "Wrap the call in try with catch error. Add timeout and retry to the api layer."
+    ),
+    RuleSet(
+      id = "r16", number = "16",
+      titlePl = "Adres bazowy przez HTTPS", titleEn = "Base address over HTTPS",
+      rulePl = "Warstwa api może używać wyłącznie adresu z HTTPS. Połączenie nieszyfrowane to błąd bezpieczeństwa.",
+      ruleEn = "An api layer may use an HTTPS address only. An unencrypted connection is a security error.",
+      syntax = "base \"https://...\"",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "api NotesApi\n  base \"https://api.example.com\"\n  timeout 15000\n  retry 2",
+      badCode = "api NotesApi\n  base \"http://api.example.com\"\n  timeout 15000\n  retry 2",
+      errorCode = "AX6002",
+      errorName = "Warstwa api używa HTTP",
+      fixPl = "Zmień adres na https. Jeśli serwer nie obsługuje HTTPS, to nie jest gotowy do użytku.",
+      fixEn = "Change the address to https. If the server does not support HTTPS it is not ready for use."
+    ),
+    RuleSet(
+      id = "r17", number = "17",
+      titlePl = "Nawigacja musi mieć odpowiednik przyciskiem", titleEn = "Every gesture needs a button alternative",
+      rulePl = "Każde działanie wywołane gestem musi mieć odpowiednik w postaci przycisku. Inaczej osoba bez sprawnej dłoni nie wykona tej akcji.",
+      ruleEn = "Every gesture-driven action needs a button alternative. Otherwise someone without hand dexterity cannot perform it.",
+      syntax = "Zasada dostepnosci",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "column\n  gap 12\n\n  button \"Przesuń dalej\"\n    style buttonPrimary\n    accessibility label \"Przejdź do następnego elementu\"\n    when tapped\n      nextItem()",
+      badCode = "column\n  gap 12\n\n  swipeable\n    when swiped left\n      nextItem()",
+      errorCode = "AX7006",
+      errorName = "Gest bez alternatywy przyciskowej",
+      fixPl = "Dopisz przycisk wykonujący tę samą akcję co gest.",
+      fixEn = "Add a button performing the same action as the gesture."
+    ),
+    RuleSet(
+      id = "r18", number = "18",
+      titlePl = "Tempo i animacja nie mogą być jedynym nośnikiem", titleEn = "Timing and motion cannot be the only carrier",
+      rulePl = "Informacja przekazana animacją albo tętnem musi mieć odpowiednik w tekście, dźwięku albo wibracji. Animacja respektuje ustawienie ograniczenia ruchu.",
+      ruleEn = "Information carried by animation or a pulse must have a text, sound or vibration counterpart. Animation respects the reduced-motion setting.",
+      syntax = "Zasada dostepnosci",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "card\n  column\n    gap 8\n    text \"Łączenie…\"\n      style caption\n    text \"Trwa próba połączenia z serwerem.\"\n      style caption",
+      badCode = "card\n  animate appear\n    duration 4000ms\n\n  text \"\"\n    style caption",
+      errorCode = "AX7007",
+      errorName = "Informacja tylko w animacji",
+      fixPl = "Dodaj opis tekstowy obok animacji. Nie usuwaj animacji, uzupełnij ją.",
+      fixEn = "Add a text description next to the animation. Do not remove the animation, complement it."
+    ),
+    RuleSet(
+      id = "r19", number = "19",
+      titlePl = "Wynik AI zawsze oznaczony", titleEn = "AI output is always marked",
+      rulePl = "Treść wygenerowana przez model jest jawnie oznaczona. Rozpoznany znak, transkrypcja i tłumaczenie wymagają potwierdzenia przez człowieka przed użyciem.",
+      ruleEn = "Model-generated content is explicitly marked. A recognised sign, a transcript and a translation require human confirmation before use.",
+      syntax = "Zasada odpowiedzialnosci",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "card\n  column\n    gap 8\n    text \"AI\"\n      style badgeAi\n    text \"Treść wygenerowana przez model. Sprawdź przed użyciem.\"\n      style caption",
+      badCode = "card\n  column\n    gap 8\n    text generatedAnswer\n      style body",
+      errorCode = "AX6003",
+      errorName = "Treść AI bez oznaczenia",
+      fixPl = "Dodaj widoczną etykietę informującą, że treść pochodzi z modelu.",
+      fixEn = "Add a visible label stating the content comes from a model."
+    ),
+    RuleSet(
+      id = "r20", number = "20",
+      titlePl = "Kontrast i obszar dotyku", titleEn = "Contrast and touch area",
+      rulePl = "Kontrast tekstu wynosi co najmniej 4,5 do 1, a elementy interaktywne mają co najmniej 48 na 48 punktów. Rozmiar tekstu skaluje się do trzystu procent.",
+      ruleEn = "Text contrast is at least 4.5 to 1, interactive elements are at least 48 by 48 points, and text scales up to three hundred percent.",
+      syntax = "Zasada dostepnosci",
+      goodPl = "Poprawnie", goodEn = "Correct",
+      goodCode = "button \"Wyślij\"\n  style buttonPrimary\n  height 52\n  accessibility label \"Wyślij wiadomość\"\n  when tapped\n    send()",
+      badCode = "button \"Wyślij\"\n  height 24\n  color #DDDDDD\n  background #FFFFFF\n  accessibility label \"Wyślij wiadomość\"\n  when tapped\n    send()",
+      errorCode = "AX7004",
+      errorName = "Zbyt niski kontrast albo zbyt mały obszar dotyku",
+      fixPl = "Podnieś kontrast do co najmniej 4,5 do 1 i zwiększ wysokość elementu do 48 punktów.",
+      fixEn = "Raise contrast to at least 4.5 to 1 and increase the element height to 48 points."
+    )
   ]
-  save syntax
+  save rules
 
-  set layers = [
-    Layer(id = "l1", index = 1, name = "Lexer", detail = "tekst źródłowy na tokeny z pozycjami i wcięciami"),
-    Layer(id = "l2", index = 2, name = "Parser", detail = "tokeny na drzewo składniowe, dziewięć jednostek programu"),
-    Layer(id = "l3", index = 3, name = "Weryfikator", detail = "jedenaście reguł dostępności, typów, magazynów i nawigacji"),
-    Layer(id = "l4", index = 4, name = "Runtime renderujący", detail = "drzewo składniowe na drzewo dokumentu"),
-    Layer(id = "l5", index = 5, name = "Ewaluator wyrażeń", detail = "literały, ścieżki, operatory, konstruktory, 22 funkcje wbudowane"),
-    Layer(id = "l6", index = 6, name = "Interpreter logiki", detail = "set, add, remove, update, save, if, for, try, return"),
-    Layer(id = "l7", index = 7, name = "Warstwa API", detail = "wywołania z limitem czasu i ponawianiem z deklaracji"),
-    Layer(id = "l8", index = 8, name = "Uprawnienia", detail = "żądania do przeglądarki i preferencje dostępności"),
-    Layer(id = "l9", index = 9, name = "Pamięć trwała", detail = "stan magazynów między odświeżeniami strony"),
-    Layer(id = "l10", index = 10, name = "Testy", detail = "jednostkowe, interfejsu i dostępności z pliku .ax")
-  ]
-  save layers
 
+// ============================================================================
+// KATALOG BŁĘDÓW — każdy kod z przyczyną i poprawką, dwujęzycznie
+// ============================================================================
+
+function loadErrors()
   set errors = [
-    ErrorClass(id = "e1", range = "AX1000-AX1999", name = "składnia"),
-    ErrorClass(id = "e2", range = "AX2000-AX2999", name = "typy"),
-    ErrorClass(id = "e3", range = "AX3000-AX3999", name = "interfejs i layout"),
-    ErrorClass(id = "e4", range = "AX4000-AX4999", name = "stan i magazyny"),
-    ErrorClass(id = "e5", range = "AX5000-AX5999", name = "API i sieć"),
-    ErrorClass(id = "e6", range = "AX6000-AX6999", name = "bezpieczeństwo"),
-    ErrorClass(id = "e7", range = "AX7000-AX7999", name = "dostępność"),
-    ErrorClass(id = "e8", range = "AX8000-AX8999", name = "platforma i nawigacja"),
-    ErrorClass(id = "e9", range = "AX9000-AX9999", name = "wydajność")
+    ErrorRow(id = "e1", code = "AX1001", rangePl = "AX1000–AX1999 Składnia", rangeEn = "AX1000–AX1999 Syntax",
+      sample = "Notatnik\n  version 1.0",
+      causePl = "Linia najwyższego poziomu nie zaczyna się od słowa kluczowego sekcji.", causeEn = "The top-level line does not start with a section keyword.",
+      fixPl = "Rozpocznij sekcję jednym z trzynastu słów: app, theme, style, enum, data, store, global state, permission, api, function, component, screen, test.", fixEn = "Start the section with one of thirteen keywords: app, theme, style, enum, data, store, global state, permission, api, function, component, screen, test."),
+    ErrorRow(id = "e2", code = "AX1002", rangePl = "AX1000–AX1999 Składnia", rangeEn = "AX1000–AX1999 Syntax",
+      sample = "text „Witaj”",
+      causePl = "Tekst otoczony krzywym cudzysłowem z edytora tekstu.", causeEn = "Text wrapped in curly quotes from a word processor.",
+      fixPl = "Użyj prostego cudzysłowu. Wyłącz inteligentne cudzysłowy w edytorze.", fixEn = "Use straight quotes. Disable smart quotes in your editor."),
+    ErrorRow(id = "e3", code = "AX1003", rangePl = "AX1000–AX1999 Składnia", rangeEn = "AX1000–AX1999 Syntax",
+      sample = "isOnline Boolean = True",
+      causePl = "Flaga zapisana wielką literą albo pusta wartość zapisana jako null lub nil.", causeEn = "A boolean written uppercase, or an empty value written as null or nil.",
+      fixPl = "Zapisz true, false i none małymi literami.", fixEn = "Write true, false and none in lowercase."),
+    ErrorRow(id = "e4", code = "AX1005", rangePl = "AX1000–AX1999 Składnia", rangeEn = "AX1000–AX1999 Syntax",
+      sample = "\ttitle \"Start\"",
+      causePl = "Tabulator i spacje w tym samym wcięciu.", causeEn = "Tabs and spaces in the same indentation.",
+      fixPl = "Zamień tabulator na dwie spacje. Ustaw edytor na wcięcia spacjami.", fixEn = "Replace the tab with two spaces. Configure your editor for space indentation."),
+    ErrorRow(id = "e5", code = "AX2002", rangePl = "AX2000–AX2999 Typy", rangeEn = "AX2000–AX2999 Types",
+      sample = "data User\n  avatar Text empty",
+      causePl = "Pole ma typ, którego nie ma wśród wbudowanych ani zadeklarowanych w pliku.", causeEn = "A field uses a type that is neither built-in nor declared in the file.",
+      fixPl = "Użyj typu wbudowanego albo zadeklaruj model blokiem data. Opcjonalność oznacz znakiem zapytania.", fixEn = "Use a built-in type or declare the model with a data block. Mark optionality with a question mark."),
+    ErrorRow(id = "e6", code = "AX2005", rangePl = "AX2000–AX2999 Typy", rangeEn = "AX2000–AX2999 Types",
+      sample = "data chatMessage",
+      causePl = "Nazwa modelu, enuma albo komponentu zapisana małą literą.", causeEn = "A model, enum or component name written lowercase.",
+      fixPl = "Zmień pierwszą literę na wielką. To ostrzeżenie, nie błąd — kod się skompiluje.", fixEn = "Upper-case the first letter. This is a warning, not an error — the code still compiles."),
+    ErrorRow(id = "e7", code = "AX3004", rangePl = "AX3000–AX3999 Interfejs", rangeEn = "AX3000–AX3999 Interface",
+      sample = "when touched",
+      causePl = "Nazwa zdarzenia nie należy do listy dwunastu rozpoznawanych.", causeEn = "The event name is not one of the twelve recognised names.",
+      fixPl = "Użyj jednej z nazw: tapped, changed value, screen appears, screen disappears, app launches, valid, invalid, error, online, offline, permission granted, permission denied.", fixEn = "Use one of: tapped, changed value, screen appears, screen disappears, app launches, valid, invalid, error, online, offline, permission granted, permission denied."),
+    ErrorRow(id = "e8", code = "AX3006", rangePl = "AX3000–AX3999 Interfejs", rangeEn = "AX3000–AX3999 Interface",
+      sample = "list messages\n  item message",
+      causePl = "Lista nie deklaruje, co pokazać przy braku danych.", causeEn = "The list does not declare what to show when there is no data.",
+      fixPl = "Dopisz blok empty przed blokiem item.", fixEn = "Add an empty block before the item block."),
+    ErrorRow(id = "e9", code = "AX4002", rangePl = "AX4000–AX4999 Stan", rangeEn = "AX4000–AX4999 State",
+      sample = "global state isSignedIn Boolean",
+      causePl = "Stan globalny bez wartości początkowej.", causeEn = "Global state without an initial value.",
+      fixPl = "Dopisz wartość po znaku równości.", fixEn = "Add a value after the equals sign."),
+    ErrorRow(id = "e10", code = "AX4004", rangePl = "AX4000–AX4999 Stan", rangeEn = "AX4000–AX4999 State",
+      sample = "store messages local\n  list Message",
+      causePl = "Magazyn nie deklaruje klucza przechowywania.", causeEn = "The store does not declare a storage key.",
+      fixPl = "Dopisz linię key z nazwą i numerem wersji.", fixEn = "Add a key line with a name and a version number."),
+    ErrorRow(id = "e11", code = "AX5004", rangePl = "AX5000–AX5999 Sieć", rangeEn = "AX5000–AX5999 Network",
+      sample = "set result = TasksApi.list()",
+      causePl = "Wywołanie sieciowe bez bloku try z catch, albo blok try bez catch.", causeEn = "A network call with no try/catch, or a try block with no catch.",
+      fixPl = "Otocz wywołanie blokiem try z catch error i obsłuż komunikat błędu.", fixEn = "Wrap the call in try with catch error and handle the error message."),
+    ErrorRow(id = "e12", code = "AX5005", rangePl = "AX5000–AX5999 Sieć", rangeEn = "AX5000–AX5999 Network",
+      sample = "api TasksApi\n  base \"https://api.example.com\"",
+      causePl = "Warstwa api nie deklaruje limitu czasu i liczby ponowień.", causeEn = "The api layer declares neither a timeout nor a retry count.",
+      fixPl = "Dopisz timeout i retry. Wartości orientacyjne: 15000 milisekund i 3 próby.", fixEn = "Add timeout and retry. Sensible values: 15000 milliseconds and 3 attempts."),
+    ErrorRow(id = "e13", code = "AX6001", rangePl = "AX6000–AX6999 Bezpieczeństwo", rangeEn = "AX6000–AX6999 Security",
+      sample = "store providerKeys local",
+      causePl = "Magazyn o nazwie sugerującej sekret nie jest klasy secure ani encrypted.", causeEn = "A store whose name suggests a secret is neither secure nor encrypted.",
+      fixPl = "Zmień klasę na secure. Taki magazyn szyfruje zawartość i nie trafia do kopii zapasowej.", fixEn = "Change the class to secure. Such a store encrypts its content and is excluded from backups."),
+    ErrorRow(id = "e14", code = "AX6002", rangePl = "AX6000–AX6999 Bezpieczeństwo", rangeEn = "AX6000–AX6999 Security",
+      sample = "base \"http://api.example.com\"",
+      causePl = "Adres bazowy warstwy api nie używa HTTPS.", causeEn = "The api layer base address does not use HTTPS.",
+      fixPl = "Zmień adres na https. Serwer bez HTTPS nie jest gotowy do użytku.", fixEn = "Change the address to https. A server without HTTPS is not ready for use."),
+    ErrorRow(id = "e15", code = "AX7001", rangePl = "AX7000–AX7999 Dostępność", rangeEn = "AX7000–AX7999 Accessibility",
+      sample = "image user.avatarUrl",
+      causePl = "Obraz bez tekstu alternatywnego.", causeEn = "An image with no alt text.",
+      fixPl = "Dopisz linię alt z krótkim opisem tego, co widać.", fixEn = "Add an alt line with a short description of what is visible."),
+    ErrorRow(id = "e16", code = "AX7002", rangePl = "AX7000–AX7999 Dostępność", rangeEn = "AX7000–AX7999 Accessibility",
+      sample = "button icon \"mic\"",
+      causePl = "Przycisk bez widocznego tekstu nie ma etykiety dostępności.", causeEn = "A button with no visible text has no accessibility label.",
+      fixPl = "Dopisz linię accessibility label z opisem akcji.", fixEn = "Add an accessibility label line describing the action."),
+    ErrorRow(id = "e17", code = "AX7003", rangePl = "AX7000–AX7999 Dostępność", rangeEn = "AX7000–AX7999 Accessibility",
+      sample = "field email",
+      causePl = "Pole formularza bez etykiety.", causeEn = "A form field with no label.",
+      fixPl = "Dopisz linię label z nazwą pola widoczną dla użytkownika.", fixEn = "Add a label line with the user-visible field name."),
+    ErrorRow(id = "e18", code = "AX7004", rangePl = "AX7000–AX7999 Dostępność", rangeEn = "AX7000–AX7999 Accessibility",
+      sample = "color #DDDDDD na tle #FFFFFF",
+      causePl = "Kontrast tekstu poniżej 4,5 do 1 albo obszar dotyku mniejszy niż 48 punktów.", causeEn = "Text contrast below 4.5 to 1, or a touch area smaller than 48 points.",
+      fixPl = "Podnieś kontrast i zwiększ wysokość elementu interaktywnego do 48 punktów. To ostrzeżenie z propozycją gotowej wartości.", fixEn = "Raise contrast and increase the interactive element height to 48 points. This is a warning with a suggested value."),
+    ErrorRow(id = "e19", code = "AX7006", rangePl = "AX7000–AX7999 Dostępność", rangeEn = "AX7000–AX7999 Accessibility",
+      sample = "when swiped left\n  nextItem()",
+      causePl = "Akcja dostępna wyłącznie gestem, bez odpowiednika przyciskiem.", causeEn = "An action available only by gesture, with no button alternative.",
+      fixPl = "Dopisz przycisk wykonujący tę samą akcję.", fixEn = "Add a button performing the same action."),
+    ErrorRow(id = "e20", code = "AX8001", rangePl = "AX8000–AX8999 Platforma", rangeEn = "AX8000–AX8999 Platform",
+      sample = "nawigacja do ekranu, którego nie ma w pliku",
+      causePl = "Cel nawigacji nie istnieje w pliku albo przyjmuje inną liczbę argumentów.", causeEn = "The navigation target does not exist in the file, or takes a different number of arguments.",
+      fixPl = "Popraw nazwę albo dodaj brakujący ekran. Kompilator wypisze dostępne cele.", fixEn = "Fix the name or add the missing screen. The compiler lists available targets."),
+    ErrorRow(id = "e21", code = "AX2001", rangePl = "AX2000–AX2999 Typy", rangeEn = "AX2000–AX2999 Types",
+      sample = "state count Text = 0",
+      causePl = "Wartość początkowa nie pasuje do zadeklarowanego typu.", causeEn = "The initial value does not match the declared type.",
+      fixPl = "Zmień typ na Number albo wartość na tekst w cudzysłowie.", fixEn = "Change the type to Number or the value to a quoted string."),
+    ErrorRow(id = "e22", code = "AX2003", rangePl = "AX2000–AX2999 Typy", rangeEn = "AX2000–AX2999 Types",
+      sample = "function add(a Number, b Number) returns Number",
+      causePl = "Funkcja deklaruje typ zwracany, ale żadna ścieżka nie kończy się instrukcją return.", causeEn = "The function declares a return type but no path ends with a return statement.",
+      fixPl = "Dopisz return na końcu funkcji i we wszystkich gałęziach warunków.", fixEn = "Add a return at the end of the function and in every branch."),
+    ErrorRow(id = "e23", code = "AX3002", rangePl = "AX3000–AX3999 Interfejs", rangeEn = "AX3000–AX3999 Interface",
+      sample = "screen Home\n  column",
+      causePl = "Ekran nie deklaruje tytułu. Tytuł jest ogłaszany przez czytnik ekranu przy wejściu.", causeEn = "The screen declares no title. The title is announced by screen readers on entry.",
+      fixPl = "Dopisz linię title z nazwą ekranu.", fixEn = "Add a title line with the screen name."),
+    ErrorRow(id = "e24", code = "AX4003", rangePl = "AX4000–AX4999 Stan", rangeEn = "AX4000–AX4999 State",
+      sample = "state draft Text = \"\"\nstate draft Text = \"x\"",
+      causePl = "Ten sam stan zadeklarowany dwa razy na jednym ekranie.", causeEn = "The same state declared twice on one screen.",
+      fixPl = "Usuń jedną z deklaracji.", fixEn = "Remove one of the declarations."),
+    ErrorRow(id = "e25", code = "AX9001", rangePl = "AX9000–AX9999 Wydajność", rangeEn = "AX9000–AX9999 Performance",
+      sample = "list items\n  item item\n    list items\n      item inner",
+      causePl = "Zbyt głębokie zagnieżdżenie list albo powtarzalne obliczenia wewnątrz pętli interfejsu.", causeEn = "Lists nested too deeply, or repeated computation inside a UI loop.",
+      fixPl = "Wynieś obliczenie przed listę i zapisz wynik w stanie. Ogranicz zagnieżdżenie do dwóch poziomów.", fixEn = "Hoist the computation before the list and store the result in state. Limit nesting to two levels.")
   ]
   save errors
 
-  set pitfalls = [
-    Pitfall(id = "p1", title = "Typ idzie po nazwie", detail = "W AXCode pisze się id Text, nie Text id. To odwrotnie niż w TypeScript, Kotlinie i Swiftcie — najczęstsza pomyłka modeli AI."),
-    Pitfall(id = "p2", title = "Wcięcie jest składnią", detail = "Nie ma nawiasów klamrowych. Tabulator równa się dwóm spacjom. Błąd w obsłudze wcięć psuje całe drzewo składniowe."),
-    Pitfall(id = "p3", title = "Dostępność jest wymuszona", detail = "Każdy obraz potrzebuje alt, każde pole label, każdy przycisk ikonowy accessibility label. Brak zatrzymuje kompilację."),
-    Pitfall(id = "p4", title = "Sekrety tylko w secure", detail = "Magazyn o nazwie zawierającej key, token albo secret musi mieć klasę secure lub encrypted."),
-    Pitfall(id = "p5", title = "API bez limitu czasu to błąd", detail = "Każda deklaracja api wymaga timeout i retry. Bez nich kompilator zgłasza AX5001 i AX5002."),
-    Pitfall(id = "p6", title = "Nie ma AI.generateVideo", detail = "Specyfikacja definiuje pięć operacji warstwy AI: chat, transcribe, speak, generateImage i generateMusic.")
+
+// ============================================================================
+// PUŁAPKI — miejsca, w których model myli się najczęściej
+//
+// Każda pułapka ma zapis błędny, zapis poprawny i wyjaśnienie dlaczego.
+// Ta sekcja jest instrukcją dla modelu: czego nie robić i co robić zamiast.
+// ============================================================================
+
+function loadTraps()
+  set traps = [
+    TrapRow(id = "t1",
+      trapPl = "Dodawanie nawiasów klamrowych wokół bloków", trapEn = "Adding curly braces around blocks",
+      wrongCode = "screen Home {\n  title \"Start\"\n}",
+      rightCode = "screen Home\n  title \"Start\"",
+      whyPl = "AXCode używa wcięcia, nie nawiasów. Nawias klamrowy w linii to błąd AX1001.", whyEn = "AXCode uses indentation, not braces. A brace in a line is error AX1001."),
+    TrapRow(id = "t2",
+      trapPl = "Kończenie linii średnikiem", trapEn = "Ending lines with a semicolon",
+      wrongCode = "set draft = \"\";",
+      rightCode = "set draft = \"\"",
+      whyPl = "Średnik jest niedozwolony. Nowa linia kończy instrukcję.", whyEn = "A semicolon is not allowed. A newline ends the statement."),
+    TrapRow(id = "t3",
+      trapPl = "Używanie znaku równości do porównania", trapEn = "Using a single equals sign for comparison",
+      wrongCode = "if mode = \"fast\"",
+      rightCode = "if mode is \"fast\"",
+      whyPl = "Porównanie zapisujemy słowem is. Słowo is not oznacza nierówność.", whyEn = "Comparison uses the word is. The word is not means inequality."),
+    TrapRow(id = "t4",
+      trapPl = "Mieszanie listy deklaratywnej z pętlą", trapEn = "Mixing a declarative list with a loop",
+      wrongCode = "list\n  for message in messages\n    text message.body",
+      rightCode = "list messages\n  empty\n    text \"Brak\"\n  item message\n    text message.body",
+      whyPl = "W interfejsie lista ma własną składnię z gałęziami empty i item. Pętla należy do logiki.", whyEn = "In UI a list has its own syntax with empty and item branches. Loops belong to logic."),
+    TrapRow(id = "t5",
+      trapPl = "Pomijanie gałęzi empty, bo dane zawsze są", trapEn = "Skipping the empty branch because data always exists",
+      wrongCode = "list tasks\n  item task\n    text task.title",
+      rightCode = "list tasks\n  empty\n    text \"Brak zadań\"\n      style caption\n  item task\n    text task.title",
+      whyPl = "Dane bywają puste: pierwsze uruchomienie, wyczyszczony magazyn, błąd sieci. Kompilator tego pilnuje.", whyEn = "Data is sometimes empty: first launch, cleared store, network failure. The compiler enforces this."),
+    TrapRow(id = "t6",
+      trapPl = "Obraz bez opisu, gdy jest dekoracyjny", trapEn = "An image without alt when it is decorative",
+      wrongCode = "image \"hero.png\"\n  width 200",
+      rightCode = "image \"hero.png\"\n  width 200\n  alt \"Ilustracja pokazująca trzy osoby rozmawiające migowo\"",
+      whyPl = "Nie ma obrazów dekoracyjnych w rozumieniu kompilatora. Jeśli naprawdę nic nie wnosi, opisz to w alt.", whyEn = "There are no decorative images as far as the compiler is concerned. If it truly adds nothing, say so in alt."),
+    TrapRow(id = "t7",
+      trapPl = "Sekret w magazynie lokalnym", trapEn = "A secret in a local store",
+      wrongCode = "store apiKeys local\n  list Text\n  key \"a.v1\"",
+      rightCode = "store apiKeys secure\n  list Text\n  key \"a.v1\"",
+      whyPl = "Magazyn lokalny jest czytelny dla systemu i trafia do kopii zapasowej. Klucz API musi być w secure.", whyEn = "A local store is readable by the system and included in backups. An API key must live in secure."),
+    TrapRow(id = "t8",
+      trapPl = "Zapominanie o wartości początkowej stanu globalnego", trapEn = "Forgetting the initial value of global state",
+      wrongCode = "global state isOnline Boolean",
+      rightCode = "global state isOnline Boolean = true",
+      whyPl = "Stan globalny istnieje od startu aplikacji, więc musi mieć wartość, zanim cokolwiek się wydarzy.", whyEn = "Global state exists from app launch, so it must have a value before anything happens."),
+    TrapRow(id = "t9",
+      trapPl = "Wywołanie sieci bez obsługi błędu", trapEn = "A network call with no error handling",
+      wrongCode = "function load()\n  set data = Api.list()",
+      rightCode = "function load()\n  try\n    set data = Api.list()\n  catch error\n    showError(error.message)",
+      whyPl = "Sieć zawodzi. Bez catch użytkownik nie dowie się, że coś poszło nie tak, a aplikacja zostanie w stanie zawieszenia.", whyEn = "Networks fail. Without catch the user never learns something went wrong and the app stays in a stuck state."),
+    TrapRow(id = "t10",
+      trapPl = "Cudzysłów krzywy zamiast prostego", trapEn = "A curly quote instead of a straight one",
+      wrongCode = "text „Witaj”",
+      rightCode = "text \"Witaj\"",
+      whyPl = "Krzywy cudzysłów wygląda niemal identycznie, a parser go nie rozpoznaje jako ogranicznika tekstu.", whyEn = "A curly quote looks almost identical, and the parser does not recognise it as a text delimiter."),
+    TrapRow(id = "t11",
+      trapPl = "Zmiana klasy magazynu bez zmiany klucza", trapEn = "Changing a store class without changing the key",
+      wrongCode = "store session secure\n  single Text\n  key \"app.session.v1\"",
+      rightCode = "store session secure\n  single Text\n  key \"app.session.v2\"",
+      whyPl = "Zmiana klasy zmienia sposób zapisu, więc dane zapisane starą klasą byłyby nieczytelne. Podnieś numer wersji w kluczu.", whyEn = "Changing the class changes the storage format, so data written by the old class would be unreadable. Bump the version in the key."),
+    TrapRow(id = "t12",
+      trapPl = "Warunek bez gałęzi else, gdy obie ścieżki są potrzebne", trapEn = "A condition without else when both paths are needed",
+      wrongCode = "if isReady\n  button \"Dalej\"",
+      rightCode = "if isReady\n  button \"Dalej\"\nelse\n  button \"Czekaj\"",
+      whyPl = "Jeśli użytkownik musi wiedzieć, co się dzieje w obu przypadkach, potrzebna jest gałąź else. Interfejs bez niej wygląda na zepsuty.", whyEn = "If the user must know what is happening in both cases, an else branch is needed. Without it the UI looks broken."),
+    TrapRow(id = "t13",
+      trapPl = "Nazwa typu z małej litery", trapEn = "A lowercase type name",
+      wrongCode = "data message\n  id Text",
+      rightCode = "data Message\n  id Text",
+      whyPl = "Nazwy typów piszemy z wielkiej litery. To ostrzeżenie, ale przy pracy z modelem warto trzymać konwencję od początku.", whyEn = "Type names start uppercase. It is a warning, but when working with a model it pays to keep the convention from the start."),
+    TrapRow(id = "t14",
+      trapPl = "Wysyłanie wyniku AI bez potwierdzenia", trapEn = "Sending AI output without confirmation",
+      wrongCode = "when changed value\n  sendMessage(transcript)",
+      rightCode = "when changed value\n  set candidate = transcript\n\nbutton \"Potwierdź i wyślij\"\n  accessibility label \"Potwierdź transkrypcję i wyślij\"\n  when tapped\n    sendMessage(candidate)",
+      whyPl = "Transkrypcja i rozpoznanie znaku bywają błędne. Człowiek zatwierdza, zanim treść trafi do innych.", whyEn = "Transcription and sign recognition are imperfect. A human confirms before the text reaches others."),
+    TrapRow(id = "t15",
+      trapPl = "Opis stanu w miejscu przeznaczonym na wartość", trapEn = "A description where a value belongs",
+      wrongCode = "state isBusy Boolean = \"trwa ładowanie\"",
+      rightCode = "state isBusy Boolean = false",
+      whyPl = "Typ wyznacza kształt wartości. Opis stanu to komentarz albo tekst w interfejsie, nie wartość flagi.", whyEn = "The type defines the value shape. A state description is a comment or UI text, not a boolean value.")
   ]
-  save pitfalls
-
-  set stages = [
-    Stage(id = "st1", version = "1.x", title = "Rdzeń języka", detail = "Stabilna składnia, jednostki programu, system typów, magazyny, zdarzenia, testy.", state = StageState.done),
-    Stage(id = "st2", version = "1.5", title = "Kompilator w przeglądarce", detail = "Lexer, parser, weryfikator, runtime, ewaluator, interpreter, warstwa API, uprawnienia, pamięć trwała, testy.", state = StageState.done),
-    Stage(id = "st3", version = "2.x", title = "AXIR i backendy natywne", detail = "Reprezentacja pośrednia, optymalizator oraz generatory dla Swifta, Kotlina i WebAssembly.", state = StageState.planned),
-    Stage(id = "st4", version = "3.x", title = "Edytor i rozszerzenia", detail = "Edytor wizualny, wtyczki, inspektor dostępności i asystent AI.", state = StageState.planned)
-  ]
-  save stages
+  save traps
 
 
-function compileSource()
-  set compileFindings = []
-  set compileStatus = "Kompiluję..."
+// ============================================================================
+// KOMPILATOR W APLIKACJI — przyjmuje DOWOLNY plik .ax
+//
+// Cztery etapy: lekser, parser, weryfikator, raport. Ten sam kod obsługuje
+// każdy plik .ax, nie tylko ten. Dzięki temu bot dostaje sprzężenie zwrotne:
+// wkleja kod, dostaje listę błędów z kodem AX, linią i sugestią.
+// ============================================================================
 
-  if length(sourceText) is 0
-    set compileStatus = "Brak źródła do kompilacji."
-    announceImportant(compileStatus)
-    return
+global state srcText Text = ""
+global state lexCount Number = 0
+global state parseCount Number = 0
+global state diagCount Number = 0
+global state runOk Boolean = false
+global state runStage Text = ""
 
-  try
-    set compiledAst = Platform.compile(sourceText)
-    set compileFindings = Platform.compileFindings()
+data Token
+  kind Text
+  line Number
+  indent Number
+  text Text
 
-    if length(compileFindings) is 0
-      set compileStatus = "Brak znalezisk. Dostępność, nawigacja, typy i magazyny przeszły kontrolę."
-      announceLocal(compileStatus)
-    else
-      set compileStatus = "Znaleziska: " + length(compileFindings) + "."
-      announceImportant(compileStatus)
-  catch error
-    set compileStatus = "Błąd kompilacji: " + error.message
-    announceImportant(compileStatus)
+data Diagnostic
+  code Text
+  line Number
+  severity Text
+  messagePl Text
+  messageEn Text
+  fixPl Text
+  fixEn Text
 
-function loadSource()
-  try
-    set sourceText = Platform.readSelf()
-    set compileStatus = "Źródło wczytane: " + length(sourceText) + " znaków."
-  catch error
-    set compileStatus = "Nie udało się wczytać źródła: " + error.message
+store tokens local
+  list Token
+  key "axcode.tokens.v3"
 
-function sectionList() returns List<Text>
-  return ["Dowod", "Filozofia", "Skladnia", "Kompilator", "Architektura", "DlaAI"]
+store diagnostics local
+  list Diagnostic
+  key "axcode.diag.v3"
 
+// --- LEKSER: tekst na tokeny -----------------------------------------------
 
-  set hypotheses = [
-    Hypothesis(id = "h1", code = "H1", statement = "Jeden deklaratywny język warstwy aplikacji wystarcza do opisania produktu o złożoności aplikacji komercyjnej.", verdictText = "Potwierdzona częściowo", evidence = "AL2100test: 24 ekrany, 251 funkcji, 21 modeli danych w jednym pliku. Nie użyto konstrukcji spoza języka. Warstwa usług wymagała osobnego backendu."),
-    Hypothesis(id = "h2", code = "H2", statement = "Większość błędów dostępności, typów i nawigacji da się wykryć przed uruchomieniem aplikacji.", verdictText = "Potwierdzona", evidence = "Weryfikator wykrywa 11 z 14 reguł wymaganych przez specyfikację. Trzy brakujące wymagają pomiaru wizualnego: kontrast, obszar dotykowy, animacja."),
-    Hypothesis(id = "h3", code = "H3", statement = "Semantyka języka pozostaje przenośna między platformami bez odwołań do konkretnego interfejsu programowania.", verdictText = "Potwierdzona dla semantyki", evidence = "Model danych, magazyny, nawigacja, uprawnienia i dostępność nie zawierają nazw z UIKit, Jetpack Compose ani drzewa dokumentu. Warstwa wizualna różni się celowo."),
-    Hypothesis(id = "h4", code = "H4", statement = "Kompilator zachowuje wartość nawet bez gotowych backendów natywnych.", verdictText = "Potwierdzona", evidence = "Trzy pierwsze etapy kompilacji nie zależą od platformy docelowej. Implementacja w przeglądarce uruchamia prawdziwe pliki .ax bez generowania kodu natywnego."),
-    Hypothesis(id = "h5", code = "H5", statement = "Klasa przechowywania zadeklarowana w magazynie eliminuje klasę błędów prowadzących do wycieku danych.", verdictText = "Potwierdzona konstrukcyjnie", evidence = "Reguła AX6001 wykrywa magazyn na sekrety bez klasy secure. Zabezpieczenie działa niezależnie od dyscypliny programisty.")
-  ]
-  save hypotheses
+function lexLine(raw Text, lineNo Number) returns Token
+  set indent = countIndent(raw)
+  set stripped = trimText(raw)
+  if length(stripped) is 0
+    return Token(kind = "blank", line = lineNo, indent = indent, text = "")
+  if startsWith(stripped, "//")
+    return Token(kind = "comment", line = lineNo, indent = indent, text = stripped)
+  if hasMixedIndent(raw)
+    return Token(kind = "badindent", line = lineNo, indent = indent, text = stripped)
+  set head = firstWord(stripped)
+  if isSectionKeyword(head)
+    return Token(kind = "decl", line = lineNo, indent = indent, text = stripped)
+  if contains(stripped, "(")
+    return Token(kind = "call", line = lineNo, indent = indent, text = stripped)
+  return Token(kind = "stmt", line = lineNo, indent = indent, text = stripped)
 
-  set method = [
-    MethodStep(id = "mt1", index = 1, action = "Analiza specyfikacji języka", purpose = "Ustalenie zbioru jednostek, typów i reguł wymaganych przez kompilator.", artifact = "wykaz 9 jednostek programu i 14 reguł poprawności"),
-    MethodStep(id = "mt2", index = 2, action = "Rekonstrukcja gramatyki z kodu aplikacji referencyjnej", purpose = "Uzupełnienie specyfikacji o konstrukcje nieopisane wprost.", artifact = "gramatyka wcięć, 10 kontenerów, 11 akcesoriów"),
-    MethodStep(id = "mt3", index = 3, action = "Implementacja produktu badawczego", purpose = "Sprawdzenie, czy język wystarczy do opisu realnej aplikacji.", artifact = "AL2100test: 201 929 znaków, 7368 linii, 24 ekrany"),
-    MethodStep(id = "mt4", index = 4, action = "Implementacja kompilatora", purpose = "Uruchomienie plików .ax bez zależności od backendów natywnych.", artifact = "10 warstw, 81 583 znaki, 11 reguł weryfikacji"),
-    MethodStep(id = "mt5", index = 5, action = "Audyt statyczny kodu", purpose = "Ocena dostępności, bezpieczeństwa i spójności.", artifact = "275 etykiet dostępności, 64 pola z etykietą, 0 znalezisk krytycznych"),
-    MethodStep(id = "mt6", index = 6, action = "Test samoopisujący", purpose = "Sprawdzenie wyrazistości języka przez opisanie nim samego siebie.", artifact = "strona w AXCode: 999 linii, 14 funkcji, kompilowana własnym parserem")
-  ]
-  save method
-
-  set measures = [
-    Measure(id = "me1", name = "Jednostki języka w produkcie", value = "382", unit = "jednostek", sample = "app.ax"),
-    Measure(id = "me2", name = "Ekrany aplikacji", value = "24", unit = "ekranów", sample = "app.ax"),
-    Measure(id = "me3", name = "Funkcje zadeklarowane", value = "251", unit = "funkcji", sample = "app.ax"),
-    Measure(id = "me4", name = "Modele danych", value = "21", unit = "modeli", sample = "app.ax"),
-    Measure(id = "me5", name = "Magazyny według klasy", value = "18", unit = "magazynów", sample = "app.ax"),
-    Measure(id = "me6", name = "Etykiety dostępności", value = "275", unit = "etykiet", sample = "app.ax"),
-    Measure(id = "me7", name = "Trasy backendu", value = "36", unit = "tras", sample = "worker.ts"),
-    Measure(id = "me8", name = "Tabele bazy danych", value = "17", unit = "tabel", sample = "schema.sql"),
-    Measure(id = "me9", name = "Warstwy kompilatora", value = "10", unit = "warstw", sample = "compiler.js"),
-    Measure(id = "me10", name = "Reguły weryfikacji", value = "11", unit = "reguł", sample = "compiler.js"),
-    Measure(id = "me11", name = "Pokrycie reguł specyfikacji", value = "79", unit = "procent", sample = "11 z 14 reguł"),
-    Measure(id = "me12", name = "Redukcja liczby miejsc zmiany", value = "3:1", unit = "stosunek", sample = "analiza porównawcza")
-  ]
-  save measures
-
-  set limitations = [
-    Limitation(id = "lm1", area = "Generowanie wideo", detail = "Specyfikacja definiuje pięć operacji warstwy AI: chat, transcribe, speak, generateImage, generateMusic. Operacji generowania wideo nie ma.", mitigation = "Moduł filmów obsługuje wszystkie parametry, montaż i eksport. Brakuje jednego wywołania do modelu."),
-    Limitation(id = "lm2", area = "Badanie z użytkownikami", detail = "Ocena użyteczności opiera się na analizie kodu i pomiarach strukturalnych, nie na eksperymencie z grupą osób.", mitigation = "Zaprojektowana procedura badania z osobami korzystającymi z czytników ekranu."),
-    Limitation(id = "lm3", area = "Porównanie wydajności", detail = "Nie zmierzono czasu uruchomienia, zużycia pamięci ani rozmiaru aplikacji względem implementacji natywnej.", mitigation = "Wymaga gotowych backendów natywnych, które są w planie."),
-    Limitation(id = "lm4", area = "Weryfikacja bezpieczeństwa", detail = "Reguła wykrywająca magazyn na sekrety opiera się na analizie nazwy, więc może dawać fałszywe trafienia.", mitigation = "Kierunek rozbudowy: śledzenie przepływu danych niezależne od nazewnictwa."),
-    Limitation(id = "lm5", area = "Backendy natywne", detail = "Kompilator nie generuje kodu dla iOS ani Androida. Z architektury zaimplementowano analizę, nie generowanie.", mitigation = "Warstwy analizy są niezależne od platformy docelowej i gotowe do rozbudowy.")
-  ]
-  save limitations
-
-  set citations = [
-    Citation(id = "c1", authors = "Aho A. V., Lam M. S., Sethi R., Ullman J. D.", year = "2006", title = "Compilers: Principles, Techniques and Tools", source = "Pearson, wydanie 2", identifier = "ISBN 978-0321486813"),
-    Citation(id = "c2", authors = "Fowler M.", year = "2010", title = "Domain-Specific Languages", source = "Addison-Wesley", identifier = "ISBN 978-0321712943"),
-    Citation(id = "c3", authors = "Pierce B. C.", year = "2002", title = "Types and Programming Languages", source = "MIT Press", identifier = "ISBN 978-0262162098"),
-    Citation(id = "c4", authors = "Kleppmann M.", year = "2017", title = "Designing Data-Intensive Applications", source = "O'Reilly Media", identifier = "ISBN 978-1449373320"),
-    Citation(id = "c5", authors = "Norman D. A.", year = "2013", title = "The Design of Everyday Things", source = "Basic Books, wydanie poprawione", identifier = "ISBN 978-0465050659"),
-    Citation(id = "c6", authors = "Nielsen J.", year = "1993", title = "Usability Engineering", source = "Morgan Kaufmann", identifier = "ISBN 978-0125184069"),
-    Citation(id = "c7", authors = "W3C", year = "2023", title = "Web Content Accessibility Guidelines 2.2", source = "Rekomendacja W3C", identifier = "W3C REC-WCAG22"),
-    Citation(id = "c8", authors = "Parlament Europejski i Rada", year = "2016", title = "Rozporządzenie 2016/679 o ochronie danych osobowych", source = "Dziennik Urzędowy UE", identifier = "RODO"),
-    Citation(id = "c9", authors = "IETF", year = "2015", title = "JSON Web Token", source = "RFC 7519", identifier = "RFC 7519"),
-    Citation(id = "c10", authors = "IETF", year = "2015", title = "Proof Key for Code Exchange", source = "RFC 7636", identifier = "RFC 7636"),
-    Citation(id = "c11", authors = "Moriarty K. i in.", year = "2017", title = "PKCS 5: Password-Based Cryptography Specification", source = "RFC 8018", identifier = "RFC 8018"),
-    Citation(id = "c12", authors = "Cloudflare", year = "2026", title = "Workers, D1, R2, KV and Queues documentation", source = "Dokumentacja techniczna", identifier = "developers.cloudflare.com")
-  ]
-  save citations
-
-
-function citationList() returns List<Citation>
-  return citations
-
-function methodList() returns List<MethodStep>
-  return method
-
-function measureList() returns List<Measure>
-  return measures
-
-function limitationList() returns List<Limitation>
-  return limitations
-
-function hypothesisList() returns List<Hypothesis>
-  return hypotheses
-
-// ---------------------------------------------------------------------------
-// Dokumenty do skopiowania na kompilator tego języka
-// ---------------------------------------------------------------------------
-
-function specDocument() returns Text
-  set out = "AXCODE — SPECYFIKACJA JEZYKA" + newline()
-  set out = out + "Wersja dokumentu: 2.0" + newline()
-  set out = out + "Autor: Axel G" + newline() + newline()
-  set out = out + "1. JEDNOSTKI PROGRAMU" + newline()
-  set out = out + "app, theme, style, enum, data, store, global, permission, api, function, component, screen, test" + newline() + newline()
-  set out = out + "2. TYPY WBUDOWANE" + newline()
-  set out = out + "Text, Number, Boolean, Date, Duration, Json, File, Image, Video, Audio, Location, List<T>, Map<K,V>, T?" + newline() + newline()
-  set out = out + "3. KLASY MAGAZYNOW" + newline()
-  set out = out + "local, synced, encrypted, secure, cache, queue" + newline() + newline()
-  set out = out + "4. ZDARZENIA" + newline()
-  set out = out + "when tapped, when changed value, when screen appears, when screen disappears, when app launches, when valid, when invalid, when error, when online, when offline, when permission granted, when permission denied" + newline() + newline()
-  set out = out + "5. KONTENERY" + newline()
-  set out = out + "column, row, grid, card, scroll, spacer, list, item, empty" + newline() + newline()
-  set out = out + "6. ELEMENTY TRESCI" + newline()
-  set out = out + "text, button, button icon, field, image, checkbox, audioPlayer, videoPlayer, cameraPreview" + newline() + newline()
-  set out = out + "7. REGULY WYMAGANE PRZEZ KOMPILATOR" + newline()
-  set out = out + "- obraz musi miec alt" + newline()
-  set out = out + "- pole musi miec label" + newline()
-  set out = out + "- przycisk ikonowy musi miec accessibility label" + newline()
-  set out = out + "- nawigacja musi wskazywac istniejacy ekran" + newline()
-  set out = out + "- styl musi istniec" + newline()
-  set out = out + "- operacja musi byc na zadeklarowanym magazynie" + newline()
-  set out = out + "- sekrety musza byc w magazynie secure" + newline()
-  set out = out + "- pole modelu musi miec znany typ" + newline()
-  set out = out + "- api musi miec timeout i retry" + newline() + newline()
-  set out = out + "8. KODY BLEDOW" + newline()
-  set out = out + "AX1000-AX1999 skladnia, AX2000-AX2999 typy, AX3000-AX3999 interfejs," + newline()
-  set out = out + "AX4000-AX4999 stan i magazyny, AX5000-AX5999 API, AX6000-AX6999 bezpieczenstwo," + newline()
-  set out = out + "AX7000-AX7999 dostepnosc, AX8000-AX8999 platforma, AX9000-AX9999 wydajnosc" + newline() + newline()
-  set out = out + "KONIEC SPECYFIKACJI" + newline()
-  return out
-
-function methodDocument() returns Text
-  set out = "AXCODE — METODA BADAWCZA" + newline() + newline()
-  for step in methodList()
-    set out = out + step.index + ". " + step.action + newline()
-    set out = out + "   Cel: " + step.purpose + newline()
-    set out = out + "   Artefakt: " + step.artifact + newline() + newline()
-  return out
-
-function measureDocument() returns Text
-  set out = "AXCODE — POMIARY" + newline() + newline()
-  for measure in measureList()
-    set out = out + measure.name + ": " + measure.value + " " + measure.unit + " (" + measure.sample + ")" + newline()
-  return out
-
-function citationDocument() returns Text
-  set out = "AXCODE — BIBLIOGRAFIA" + newline() + newline()
-  set index = 1
-  for citation in citationList()
-    set out = out + "[" + index + "] " + citation.authors + " (" + citation.year + "). " + citation.title + ". " + citation.source + ". " + citation.identifier + "." + newline()
+function lexAll(source Text)
+  clear tokens
+  set lines = splitText(source, newline())
+  set index = 0
+  for line in lines
     set index = index + 1
-  return out
+    add lexLine(line, index) to tokens
+  save tokens
+  set lexCount = length(tokens)
+  set runStage = "lekser"
 
-function hypothesisDocument() returns Text
-  set out = "AXCODE — HIPOTEZY BADAWCZE" + newline() + newline()
-  for hypothesis in hypothesisList()
-    set out = out + hypothesis.code + ". " + hypothesis.statement + newline()
-    set out = out + "   Wynik: " + hypothesis.verdictText + newline()
-    set out = out + "   Dowod: " + hypothesis.evidence + newline() + newline()
-  return out
+function countIndent(line Text) returns Number
+  set count = 0
+  for index in range(0, length(line))
+    set ch = charAt(line, index)
+    if ch is " "
+      set count = count + 1
+    else if ch is "\t"
+      set count = count + 2
+    else
+      return count
+  return count
 
-function fullReport() returns Text
-  set out = specDocument()
-  set out = out + newline() + methodDocument()
-  set out = out + newline() + measureDocument()
-  set out = out + newline() + hypothesisDocument()
-  set out = out + newline() + citationDocument()
-  return out
+function hasMixedIndent(line Text) returns Boolean
+  set before = true
+  set seenTab = false
+  set seenSpace = false
+  for index in range(0, length(line))
+    set ch = charAt(line, index)
+    if ch is " " and before
+      set seenSpace = true
+    else if ch is "\t" and before
+      set seenTab = true
+    else
+      set before = false
+  return seenTab and seenSpace
 
-function copySpec()
-  set clipboardText = specDocument()
-  copyToClipboard(clipboardText)
-  set compileStatus = "Specyfikacja skopiowana: " + length(clipboardText) + " znaków."
-  announceImportant(compileStatus)
+function isSectionKeyword(word Text) returns Boolean
+  if word is "app"
+    return true
+  if word is "theme"
+    return true
+  if word is "style"
+    return true
+  if word is "enum"
+    return true
+  if word is "data"
+    return true
+  if word is "store"
+    return true
+  if word is "global"
+    return true
+  if word is "permission"
+    return true
+  if word is "api"
+    return true
+  if word is "function"
+    return true
+  if word is "component"
+    return true
+  if word is "screen"
+    return true
+  if word is "test"
+    return true
+  if word is "ui"
+    return true
+  return false
 
-function copyFullReport()
-  set clipboardText = fullReport()
-  copyToClipboard(clipboardText)
-  set compileStatus = "Pelny raport skopiowany: " + length(clipboardText) + " znaków."
-  announceImportant(compileStatus)
+// --- PARSER: tokeny na strukturę -------------------------------------------
 
-function copyMethod()
-  copyToClipboard(methodDocument())
-  set compileStatus = "Metoda badawcza skopiowana."
-  announceImportant(compileStatus)
+function parseAll()
+  clear diagnostics
+  set screenNames = []
+  set modelNames = []
+  set storeNames = []
+  set fnNames = []
 
-function copyCitations()
-  copyToClipboard(citationDocument())
-  set compileStatus = "Bibliografia skopiowana."
-  announceImportant(compileStatus)
+  // pierwsze przejście: zbierz nazwy zadeklarowane w pliku
+  set pendingKind = ""
+  for token in tokens
+    if token.kind is "decl"
+      set head = firstWord(token.text)
+      if head is "screen"
+        set screenNames = addUnique(screenNames, nthWord(token.text, 2))
+      if head is "data"
+        set modelNames = addUnique(modelNames, nthWord(token.text, 2))
+      if head is "enum"
+        set modelNames = addUnique(modelNames, nthWord(token.text, 2))
+      if head is "store"
+        set storeNames = addUnique(storeNames, nthWord(token.text, 2))
+      if head is "function"
+        set fnNames = addUnique(fnNames, nameBeforeParen(token.text))
 
-function toggleBlock(id Text)
-  if expandedBlock is id
-    set expandedBlock = ""
+  // drugie przejście: sprawdź reguły
+  set prevIndent = 0
+  set inStore = false
+  set inScreen = false
+  set storeHasKey = false
+  set storeIsSecure = false
+  set storeName = ""
+
+  for token in tokens
+    if token.kind is "blank" or token.kind is "comment"
+      continue
+
+    if token.kind is "badindent"
+      pushDiag("AX1005", token.line, "error", "Mieszane wcięcie w jednej linii.", "Mixed indentation in one line.", "Zamień tabulator na dwie spacje.", "Replace the tab with two spaces.")
+      continue
+
+    if token.kind is "decl"
+      set head = firstWord(token.text)
+
+      // zamknięcie poprzedniego magazynu
+      if inStore
+        if storeHasKey is false
+          pushDiag("AX4004", token.line, "error", "Magazyn " + storeName + " nie ma klucza.", "Store " + storeName + " has no key.", "Dopisz linię key z numerem wersji.", "Add a key line with a version number.")
+        if storeIsSecure is false
+          if looksLikeSecret(storeName)
+            pushDiag("AX6001", token.line, "error", "Magazyn " + storeName + " przechowuje sekret bez klasy secure.", "Store " + storeName + " holds a secret without the secure class.", "Zmień klasę magazynu na secure.", "Change the store class to secure.")
+        set inStore = false
+
+      if head is "screen"
+        set inScreen = true
+        set screenTitleFound = false
+      else
+        set inScreen = false
+
+      if head is "store"
+        set inStore = true
+        set storeHasKey = false
+        set storeName = nthWord(token.text, 2)
+        set storeIsSecure = contains(token.text, "secure") or contains(token.text, "encrypted")
+
+      if head is "global"
+        if contains(token.text, "=") is false
+          pushDiag("AX4002", token.line, "error", "Stan globalny bez wartości początkowej.", "Global state without an initial value.", "Dopisz wartość po znaku równości.", "Add a value after the equals sign.")
+        if contains(token.text, "True") or contains(token.text, "False")
+          pushDiag("AX1003", token.line, "error", "Flaga zapisana wielką literą.", "Boolean written uppercase.", "Zapisz true i false małymi literami.", "Write true and false in lowercase.")
+        if contains(token.text, "null") or contains(token.text, "nil")
+          pushDiag("AX1003", token.line, "error", "Pusta wartość zapisana jako null albo nil.", "Empty value written as null or nil.", "Użyj słowa none.", "Use the word none.")
+
+      if head is "api"
+        set inApi = true
+        set apiBase = ""
+      else
+        set inApi = false
+
+      if head is "test" or head is "ui" or head is "accessibility"
+        set runStage = "testy"
+
+    // wnętrze bloku
+    if token.kind is "stmt" or token.kind is "call"
+      set text = token.text
+
+      if inStore
+        if startsWith(text, "key ")
+          set storeHasKey = true
+
+      if inScreen
+        if startsWith(text, "title ")
+          set screenTitleFound = true
+
+      if startsWith(text, "go to ")
+        set target = nthWord(text, 3)
+        if contains(screenNames, target) is false
+          pushDiag("AX8001", token.line, "error", "Nawigacja do nieistniejącego ekranu: " + target + ".", "Navigation to a non-existent screen: " + target + ".", "Popraw nazwę albo dodaj brakujący ekran.", "Fix the name or add the missing screen.")
+
+      if startsWith(text, "image ")
+        set hasAlt = false
+        set imageLine = token.line
+        set markLine = token.line
+      if startsWith(text, "alt ")
+        set hasAlt = true
+
+      if startsWith(text, "field ")
+        set fieldHasLabel = false
+        set fieldLine = token.line
+      if startsWith(text, "label ")
+        set fieldHasLabel = true
+
+      if contains(text, "http://")
+        pushDiag("AX6002", token.line, "error", "Adres bez HTTPS.", "Address without HTTPS.", "Zmień na https.", "Change to https.")
+
+      if startsWith(text, "base ") and contains(text, "http://")
+        pushDiag("AX6002", token.line, "error", "Warstwa api używa HTTP.", "The api layer uses HTTP.", "Zmień adres bazowy na https.", "Change the base address to https.")
+
+      if contains(text, "True") or contains(text, "False")
+        pushDiag("AX1003", token.line, "error", "Flaga wielką literą.", "Boolean uppercase.", "Użyj true albo false.", "Use true or false.")
+
+  save tokens
+  set parseCount = length(diagnostics)
+  set diagCount = length(diagnostics)
+  set runStage = "parser"
+
+function looksLikeSecret(name Text) returns Boolean
+  set lower = strLower(name)
+  if contains(lower, "key")
+    return true
+  if contains(lower, "token")
+    return true
+  if contains(lower, "secret")
+    return true
+  if contains(lower, "auth")
+    return true
+  return false
+
+function pushDiag(code Text, line Number, severity Text, msgPl Text, msgEn Text, fixPl Text, fixEn Text)
+  add Diagnostic(code = code, line = line, severity = severity, messagePl = msgPl, messageEn = msgEn, fixPl = fixPl, fixEn = fixEn) to diagnostics
+
+// --- URUCHOMIENIE PEŁNEGO POTOKU -------------------------------------------
+
+function runCompiler()
+  if length(srcText) is 0
+    announceImportant("Wklej kod AXCode, żeby go sprawdzić.")
+    return
+  set runStage = "lekser"
+  lexAll(srcText)
+  set runStage = "parser"
+  parseAll()
+  set runOk = length(diagnostics) is 0
+  set runStage = "gotowe"
+  if runOk
+    announceImportant("Kod jest poprawny. Lekser zebrał " + lexCount + " tokenów, nie ma błędów.")
   else
-    set expandedBlock = id
+    announceImportant("Znaleziono " + length(diagnostics) + " uwag. Przejrzyj listę i popraw.")
 
-function goTo(target Text)
-  set currentScreen = target
-  announceLocal("Sekcja: " + target)
+function loadSampleGood()
+  set srcText = "app \"Notatnik\"\nversion \"1.0.0\"\nlanguage pl\nsupports ios android web\nentry Home\n\ntheme default\n  follows system\n  color primary #4F46E5\n  radius medium 16\n\ndata Note\n  id Text\n  body Text\n  createdAt Date\n\nstore notes local\n  list Note\n  key \"app.notes.v1\"\n\nglobal state draft Text = \"\"\n\nscreen Home\n  title \"Notatnik\"\n\n  state isBusy Boolean = false\n\n  column\n    padding 20\n    gap 16\n\n    text \"Moje notatki\"\n      style title\n\n    list notes\n      empty\n        text \"Brak notatek\"\n          style caption\n      item note\n        text note.body\n          style body\n\n    field draft\n      label \"Nowa notatka\"\n      max length 2000\n      error \"Notatka jest za długa.\"\n\n    button \"Dodaj\"\n      style buttonPrimary\n      accessibility label \"Dodaj notatkę\"\n      when tapped\n        addNote(draft)"
+  announceLocal("Wczytano poprawny przykład.")
 
-function featureList() returns List<Feature>
-  return features
+function loadSampleBad()
+  set srcText = "Notatnik\nversion 1.0\n\nglobal state isOnline Boolean\n\ndata note\n  id Text\n\nstore apiKeys local\n  list Text\n  key \"a.v1\"\n\nscreen Home\n  column\n\n    image \"hero.png\"\n      width 200\n\n    field email\n      type email\n\n    button icon \"mic\"\n      when tapped\n        go to Profil"
+  announceLocal("Wczytano przykład z błędami. Uruchom sprawdzanie.")
 
-function metricList() returns List<Metric>
-  return metrics
-
-function syntaxList() returns List<SyntaxBlock>
-  return syntax
-
-function layerList() returns List<Layer>
-  return layers
-
-function errorList() returns List<ErrorClass>
-  return errors
-
-function pitfallList() returns List<Pitfall>
-  return pitfalls
-
-function stageList() returns List<Stage>
-  return stages
-
-function stageLabel(state StageState) returns Text
-  if state is StageState.done
-    return "Zrobione"
-  return "W planie"
+function diagCountByCode(code Text) returns Number
+  set count = 0
+  for diag in diagnostics
+    if diag.code is code
+      set count = count + 1
+  return count
 
 
-component HypothesisCard(hypothesis Hypothesis)
-  card
+
+// ---------------------------------------------------------------------------
+// Aliasy modeli danych.
+//
+// Poniższe nazwy występują w listach danych jako konstruktory modeli. Parser
+// rozpoznaje konstruktor po wielkiej literze i nazwie zadeklarowanego modelu.
+// Te komponenty istnieją po to, żeby nazwa była jednoznaczna w obu rolach:
+// jako model danych przy tworzeniu wartości i jako element interfejsu, gdyby
+// ktoś chciał go użyć do wyświetlenia jednego wiersza.
+// ---------------------------------------------------------------------------
+
+component GrammarRuleRow(rule GrammarRule)
+  cardRaised
     column
-      gap 10
-      row
-        gap 12
-        align center
-        text hypothesis.code
-          style tag
-        text hypothesis.verdictText
-          style pill
-      text hypothesis.statement
-        style h3
-        max lines 4
-      text hypothesis.evidence
-        style body
+      gap 8
+
+      text rule.nonterminal
+        style heading
+
+      text rule.production
+        style code
         max lines 6
 
-component MethodStepRow(step MethodStep)
-  cardAccent
+component LexemeRow(item Lexeme)
+  row
+    gap 10
+    align center
+    justify spaceBetween
+
+    text item.kind
+      style heading
+
+    text item.example
+      style mono
+
+component RuleSetRow(rule RuleSet)
+  cardRaised
+    column
+      gap 10
+
+      text rule.number + " · " + rule.errorCode
+        style badge
+
+      text rule.titlePl
+        style heading
+
+      text rule.rulePl
+        style body
+
+component ErrorRowView(item ErrorRow)
+  card
     column
       gap 8
-      row
-        gap 14
-        align center
-        text step.index
-          style tag
-        text step.action
-          style h3
-      text step.purpose
+
+      text item.code
+        style badgeErr
+
+      text item.causePl
         style body
-        max lines 3
-      text step.artifact
-        style caption
-        max lines 2
 
-component MeasureRow(measure Measure)
-  row
-    gap 16
-    align center
-    justify spaceBetween
-    text measure.name
-      style body
-    column
-      gap 2
-      text measure.value + " " + measure.unit
-        style subheading
-      text measure.sample
-        style caption
-
-component LimitationCard(limitation Limitation)
-  card
+component TrapRowView(trap TrapRow)
+  cardRaised
     column
       gap 10
-      text limitation.area
-        style tag
-      text limitation.detail
-        style body
-        max lines 5
-      text "Sposob ograniczenia: " + limitation.mitigation
-        style caption
-        max lines 4
 
-component CitationRow(citation Citation, index Text)
-  row
-    gap 14
-    align start
-    text index
-      style caption
-    column
-      gap 3
-      text citation.authors + " (" + citation.year + ")"
-        style body
-      text citation.title
-        style subheading
-        max lines 3
-      text citation.source + " · " + citation.identifier
-        style caption
-        max lines 2
+      text trap.trapPl
+        style heading
 
-component NavBar()
-  row
-    padding 16 24
-    gap 12
-    align center
-    justify spaceBetween
+      text trap.wrongCode
+        style codeBad
+        max lines 6
 
-    row
-      gap 12
-      align center
-      text "AX"
-        style tag
-      text "AXCode"
-        style subheading
+// ============================================================================
+// KOMPONENTY
+// ============================================================================
 
-    row
-      gap 20
-      align center
-      button "Dowód"
-        style buttonTab
-        accessibility label "Przejdź do sekcji dowodu działania"
-        when tapped
-          goTo("Dowod")
-      button "Filozofia"
-        style buttonTab
-        accessibility label "Przejdź do sekcji filozofii języka"
-        when tapped
-          goTo("Filozofia")
-      button "Składnia"
-        style buttonTab
-        accessibility label "Przejdź do sekcji składni"
-        when tapped
-          goTo("Skladnia")
-      button "Kompilator"
-        style buttonTab
-        accessibility label "Przejdź do sekcji kompilatora"
-        when tapped
-          goTo("Kompilator")
-      button "Architektura"
-        style buttonTab
-        accessibility label "Przejdź do sekcji architektury"
-        when tapped
-          goTo("Architektura")
-      button "Dla AI"
-        style buttonTab
-        accessibility label "Przejdź do sekcji dla modeli AI"
-        when tapped
-          goTo("DlaAI")
-      button "Nauka"
-        style buttonTab
-        accessibility label "Przejdź do sekcji naukowej"
-        when tapped
-          goTo("Nauka")
-
-component FeatureCard(feature Feature)
-  card
-    column
-      gap 10
-      text feature.number
-        style tag
-      text feature.title
-        style h3
-      text feature.detail
-        style body
-        max lines 5
-
-component MetricBox(metric Metric)
-  cardAccent
-    column
-      gap 6
-      text metric.value
-        style metric
-      text metric.label
-        style caption
-        max lines 3
-
-component SyntaxWindow(block SyntaxBlock)
+component EmptyState(title Text, hint Text)
   column
-    gap 12
-
-    row
-      gap 12
-      align center
-      justify spaceBetween
-      text block.label
-        style subheading
-      if expandedBlock is block.id
-        button "Zwiń"
-          style buttonTab
-          accessibility label "Zwiń przykład kodu"
-          when tapped
-            toggleBlock(block.id)
-      else
-        button "Pokaż kod"
-          style buttonTab
-          accessibility label "Pokaż przykład kodu"
-          when tapped
-            toggleBlock(block.id)
-
-    if expandedBlock is block.id
-      card
-        column
-          gap 4
-          list block.lines
-            empty
-              text "Brak treści."
-                style caption
-            item line
-              text line
-                style codeLine
-
-component LayerRow(layer Layer)
-  row
-    gap 16
-    align start
-    text layer.index
-      style tag
-    column
-      gap 4
-      text layer.name
-        style subheading
-      text layer.detail
-        style caption
-        max lines 3
-
-component ErrorRow(error ErrorClass)
-  row
-    gap 16
+    padding 26
+    gap 8
     align center
-    text error.range
-      style codeLine
-    text error.name
-      style body
 
-component PitfallCard(pitfall Pitfall)
-  card
-    column
-      gap 8
-      text pitfall.title
-        style h3
-      text pitfall.detail
-        style body
-        max lines 5
+    text title
+      style heading
 
-component StageCard(stage Stage)
-  cardAccent
-    column
-      gap 8
-      row
-        gap 12
-        align center
-        text stage.version
-          style tag
-        text stageLabel(stage.state)
-          style pill
-      text stage.title
-        style h3
-      text stage.detail
-        style body
-        max lines 4
+    text hint
+      style caption
+      max lines 3
 
-component ArchitectureDiagram()
-  card
-    column
-      gap 4
-      text "app.ax"
-        style codeLine
-      text "  |"
-        style codeLine
-      text "  v"
-        style codeLine
-      text "Lexer ---------> tokeny, pozycje, wciecia, komentarze"
-        style codeLine
-      text "  |"
-        style codeLine
-      text "  v"
-        style codeLine
-      text "Parser --------> drzewo skladniowe, dziewiec jednostek"
-        style codeLine
-      text "  |"
-        style codeLine
-      text "  v"
-        style codeLine
-      text "Type Checker --> typy, zasiegi, stany, uprawnienia, dostepnosc"
-        style codeLine
-      text "  |"
-        style codeLine
-      text "  v"
-        style codeLine
-      text "AXIR ----------> platformowo-neutralny graf aplikacji"
-        style codeLine
-      text "  |"
-        style codeLine
-      text "  +--> Optimizer"
-        style codeLine
-      text "  +--> Backend iOS ------> Swift + SwiftUI"
-        style codeLine
-      text "  +--> Backend Android --> Kotlin + Jetpack Compose"
-        style codeLine
-      text "  +--> Backend Web ------> Wasm + TypeScript + DOM"
-        style codeLine
-      text "  +--> Serwer deweloperski: hot reload, inspektor dostepnosci"
-        style codeLine
+// ============================================================================
+// EKRANY — podręcznik, gramatyka, reguły, błędy, pułapki, kompilator
+// ============================================================================
 
-screen Start
-  title "AXCode"
+screen Podrecznik
+  title "AXCode — podręcznik"
 
   when screen appears
-    loadContent
-    loadSource
-    announceLocal("Strona języka AXCode.")
+    load grammar
+    load rules
+    load errors
+    load traps
+    load lexemes
+    loadGrammar()
+    loadRules()
+    loadErrors()
+    loadTraps()
+    announceLocal("Podręcznik AXCode. Sekcje: gramatyka, reguły, błędy, pułapki, kompilator.")
 
   scroll
     direction vertical
 
     column
-      gap 0
+      padding 20
+      gap 20
 
-      NavBar()
+      cardRaised
+        column
+          gap 12
 
-      column
-        padding 24
-        gap 24
+          text "PODRĘCZNIK PEŁNY"
+            style overline
 
-        row
-          gap 8
-          align center
-          text "Kompilator działa w tej przeglądarce · dziesięć warstw"
-            style badge
+          text "AXCode"
+            style display
 
-        text "Jeden plik."
-          style hero
+          text "Kompletna specyfikacja języka w dwóch językach. Każda reguła ma opis, składnię, przykład poprawny, kontrprzykład błędny i kod błędu, który zgłosi kompilator. Dzięki temu model uczy się wzorca, a nie zgaduje."
+            style body
+            max lines 5
 
-        text "Cała aplikacja."
-          style heroAccent
+          text "Complete language specification in two languages. Every rule has a description, syntax, a correct example, a wrong example and the error code the compiler reports. A model therefore learns the pattern instead of guessing."
+            style bodyEn
+            max lines 5
 
-        text "AXCode to deklaratywny język aplikacji. Jeden plik .ax opisuje interfejs, stan, dane, nawigację, bezpieczeństwo, dostępność, tryb offline i testy."
-          style lead
-          max lines 4
+          row
+            gap 8
+            align center
 
-        row
-          gap 14
-          align center
-          button "Uruchom kompilator"
-            style buttonPrimary
-            accessibility label "Przejdź do sekcji kompilatora"
-            when tapped
-              goTo("Kompilator")
-          button "Zobacz składnię"
-            style buttonGhost
-            accessibility label "Przejdź do sekcji składni"
-            when tapped
-              goTo("Skladnia")
+            button "PL + EN"
+              style pillActive
+              accessibility label "Pokaż podręcznik w obu językach"
+              when tapped
+                set langMode = "both"
 
-        grid
-          columns 4
-          gap 14
-          list metricList()
+            button "Tylko PL"
+              style pill
+              accessibility label "Pokaż podręcznik tylko po polsku"
+              when tapped
+                set langMode = "pl"
+
+            button "English only"
+              style pill
+              accessibility label "Show the handbook in English only"
+              when tapped
+                set langMode = "en"
+
+          text "Liczby: jednostek gramatyki " + length(grammar) + ", reguł " + length(rules) + ", kodów błędów " + length(errors) + ", pułapek " + length(traps) + ", reguł leksera " + length(lexemes)
+            style caption
+
+      row
+        gap 8
+        align center
+
+        button "Gramatyka"
+          style pill
+          accessibility label "Przejdź do gramatyki formalnej"
+          when tapped
+            set section = "gramatyka"
+
+        button "Reguły"
+          style pill
+          accessibility label "Przejdź do reguł języka"
+          when tapped
+            set section = "reguly"
+
+        button "Błędy"
+          style pill
+          accessibility label "Przejdź do katalogu błędów"
+          when tapped
+            set section = "bledy"
+
+        button "Pułapki"
+          style pill
+          accessibility label "Przejdź do listy pułapek"
+          when tapped
+            set section = "pulapki"
+
+        button "Kompilator"
+          style pill
+          accessibility label "Przejdź do kompilatora w aplikacji"
+          when tapped
+            set section = "kompilator"
+
+      if section is "gramatyka"
+        column
+          gap 16
+
+          text "GRAMATYKA FORMALNA"
+            style overline
+
+          text "Zapis w notacji EBNF"
+            style title
+
+          text "To kontrakt, nie opis. Parser implementuje dokładnie te reguły."
+            style body
+
+          text "This is a contract, not a description. The parser implements exactly these rules."
+            style bodyEn
+
+          list grammar
             empty
-              text "Brak danych."
-                style caption
-            item metric
-              MetricBox(metric)
+              EmptyState("Brak reguł gramatyki", "Wczytaj treść ponownie.")
 
-      column
-        padding 24
-        gap 20
+            item rule
+              cardRaised
+                column
+                  gap 10
 
-        text "Dowód działania"
-          style tag
+                  row
+                    gap 10
+                    align center
+                    justify spaceBetween
 
-        text "Nie mockup. Kompilator, który czyta prawdziwy kod."
-          style h1
+                    text rule.nonterminal
+                      style heading
 
-        text "Poniżej działa lexer, parser, weryfikator semantyczny i runtime renderujący. Zmień cokolwiek w źródle — strona przeliczy się sama."
-          style lead
-          max lines 4
+                    text rule.id
+                      style badge
 
-        card
-          column
-            gap 14
+                  text rule.production
+                    style code
+                    max lines 6
 
-            row
-              gap 12
-              align center
-              justify spaceBetween
-              text "Kompilator AXCode"
-                style subheading
-              row
-                gap 10
-                align center
-                button "Kompiluj"
-                  style buttonPrimary
-                  accessibility label "Uruchom kompilację źródła"
-                  when tapped
-                    compileSource()
+                  if langMode is "both" or langMode is "pl"
+                    text rule.notePl
+                      style body
 
-                button "Wczytaj źródło"
-                  style buttonTab
-                  accessibility label "Wczytaj źródło tej strony"
-                  when tapped
-                    loadSource()
-                checkbox showSource
-                  accessibility label "Pokaż albo ukryj źródło"
+                  if langMode is "both" or langMode is "en"
+                    text rule.noteEn
+                      style bodyEn
 
-            if showSource
-              field sourceText
-                label "Źródło w języku AXCode"
-                max length 400000
+          text "REGUŁY LEKSERA"
+            style overline
 
-            text "Wynik kompilacji"
-              style caption
+          text "Co parser rozpoznaje jako pojedynczy element"
+            style heading
 
-            text compileStatus
-              style body
+          list lexemes
+            empty
+              EmptyState("Brak reguł leksera", "Wczytaj treść ponownie.")
 
-            list compileFindings
-              empty
-                text "Brak znalezisk. Dostępność, nawigacja, typy i magazyny przeszły kontrolę."
-                  style badge
-              item finding
-                text finding
+            item item
+              card
+                column
+                  gap 8
+
+                  row
+                    gap 10
+                    align center
+                    justify spaceBetween
+
+                    text item.kind
+                      style heading
+
+                    text item.example
+                      style mono
+
+                  text item.pattern
+                    style caption
+
+                  if langMode is "both" or langMode is "pl"
+                    text item.notePl
+                      style body
+
+                  if langMode is "both" or langMode is "en"
+                    text item.noteEn
+                      style bodyEn
+
+      if section is "reguly"
+        column
+          gap 16
+
+          text "REGUŁY"
+            style overline
+
+          text "Dwadzieścia reguł z przykładami"
+            style title
+
+          text "Każda reguła ma zapis poprawny i zapis błędny oraz kod, który zgłosi kompilator."
+            style body
+
+          list rules
+            empty
+              EmptyState("Brak reguł", "Wczytaj treść ponownie.")
+
+            item rule
+              cardRaised
+                column
+                  gap 12
+
+                  row
+                    gap 10
+                    align center
+                    justify spaceBetween
+
+                    text rule.number
+                      style badge
+
+                    text rule.errorCode
+                      style badgeErr
+
+                  if langMode is "both" or langMode is "pl"
+                    text rule.titlePl
+                      style heading
+
+                  if langMode is "both" or langMode is "en"
+                    text rule.titleEn
+                      style heading
+
+                  if langMode is "both" or langMode is "pl"
+                    text rule.rulePl
+                      style body
+
+                  if langMode is "both" or langMode is "en"
+                    text rule.ruleEn
+                      style bodyEn
+
+                  text rule.syntax
+                    style mono
+
+                  text "POPRAWNIE"
+                    style overline
+
+                  text rule.goodCode
+                    style codeGood
+                    max lines 14
+
+                  text "BŁĘDNIE"
+                    style overline
+
+                  text rule.badCode
+                    style codeBad
+                    max lines 10
+
+                  text "KOD BŁĘDU"
+                    style overline
+
+                  text rule.errorCode + " — " + rule.errorName
+                    style badgeErr
+
+                  if langMode is "both" or langMode is "pl"
+                    text rule.fixPl
+                      style body
+
+                  if langMode is "both" or langMode is "en"
+                    text rule.fixEn
+                      style bodyEn
+
+      if section is "bledy"
+        column
+          gap 16
+
+          text "KATALOG BŁĘDÓW"
+            style overline
+
+          text "Dwadzieścia pięć kodów z poprawkami"
+            style title
+
+          list errors
+            empty
+              EmptyState("Brak błędów w katalogu", "Wczytaj treść ponownie.")
+
+            item item
+              card
+                column
+                  gap 10
+
+                  row
+                    gap 10
+                    align center
+                    justify spaceBetween
+
+                    text item.code
+                      style badgeErr
+
+                    text item.rangePl
+                      style caption
+
+                  text item.sample
+                    style codeBad
+                    max lines 6
+
+                  if langMode is "both" or langMode is "pl"
+                    text item.causePl
+                      style body
+
+                  if langMode is "both" or langMode is "en"
+                    text item.causeEn
+                      style bodyEn
+
+                  text "POPRAWKA"
+                    style overline
+
+                  if langMode is "both" or langMode is "pl"
+                    text item.fixPl
+                      style body
+
+                  if langMode is "both" or langMode is "en"
+                    text item.fixEn
+                      style bodyEn
+
+      if section is "pulapki"
+        column
+          gap 16
+
+          text "PUŁAPKI"
+            style overline
+
+          text "Piętnaście miejsc, gdzie model się myli"
+            style title
+
+          text "Ta sekcja jest instrukcją dla modelu: czego nie robić i co zrobić zamiast. Bez tego trzeba by zgadywać i sprawdzać po kolei."
+            style body
+
+          text "This section is an instruction for a model: what not to do and what to do instead. Without it, one would have to guess and trial-and-error."
+            style bodyEn
+
+          list traps
+            empty
+              EmptyState("Brak pułapek", "Wczytaj treść ponownie.")
+
+            item trap
+              cardRaised
+                column
+                  gap 12
+
+                  if langMode is "both" or langMode is "pl"
+                    text trap.trapPl
+                      style heading
+
+                  if langMode is "both" or langMode is "en"
+                    text trap.trapEn
+                      style heading
+
+                  text "BŁĘDNIE"
+                    style overline
+
+                  text trap.wrongCode
+                    style codeBad
+                    max lines 8
+
+                  text "POPRAWNIE"
+                    style overline
+
+                  text trap.rightCode
+                    style codeGood
+                    max lines 10
+
+                  if langMode is "both" or langMode is "pl"
+                    text trap.whyPl
+                      style body
+
+                  if langMode is "both" or langMode is "en"
+                    text trap.whyEn
+                      style bodyEn
+
+      if section is "kompilator"
+        column
+          gap 16
+
+          text "KOMPILATOR"
+            style overline
+
+          text "Sprawdź dowolny plik .ax"
+            style title
+
+          text "Wklej kod i uruchom. Dostaniesz tokeny, listę uwag z kodem AX, linią i sugestią poprawki. Ten kompilator obsługuje każdy plik w tym języku, nie tylko ten."
+            style body
+
+          button "Wczytaj poprawny przykład"
+            style buttonSecondary
+            accessibility label "Wczytaj poprawny przykład kodu"
+            when tapped
+              loadSampleGood()
+
+          button "Wczytaj przykład z błędami"
+            style buttonSecondary
+            accessibility label "Wczytaj przykład kodu z błędami"
+            when tapped
+              loadSampleBad()
+
+          field srcText
+            label "Kod źródłowy AXCode"
+            placeholder "Wklej tutaj swój plik .ax"
+            max length 200000
+            error "Kod jest za długi."
+
+          button "Sprawdź kod"
+            style buttonPrimary
+            accessibility label "Uruchom kompilator na wklejonym kodzie"
+            when tapped
+              runCompiler()
+
+          if length(runStage) > 0
+            card
+              column
+                gap 8
+
+                text "WYNIK"
+                  style overline
+
+                text "Etap: " + runStage
                   style caption
 
-      column
-        padding 24
-        gap 20
+                text "Tokenów: " + lexCount
+                  style caption
 
-        text "Filozofia"
-          style tag
+                text "Uwag: " + diagCount
+                  style caption
 
-        text "Język warstwy aplikacji, nie język systemowy."
-          style h1
+                if runOk
+                  text "Kod jest poprawny"
+                    style badgeOk
+                else
+                  text "Są uwagi do poprawy"
+                    style badgeErr
 
-        text "AXCode nie zastępuje Swifta, Kotlina ani Rusta. Opisuje ekrany, stan, dane, nawigację, uprawnienia, dostępność i testy — czyli warstwę, którą dziś pisze się trzy razy."
-          style lead
-          max lines 4
-
-        grid
-          columns 2
-          gap 18
-          list featureList()
+          list diagnostics
             empty
-              text "Brak treści."
+              text "Brak uwag. Kod przeszedł pierwsze etapy."
                 style caption
-            item feature
-              FeatureCard(feature)
 
-      column
-        padding 24
-        gap 20
+            item diag
+              card
+                column
+                  gap 8
 
-        text "Składnia"
-          style tag
+                  row
+                    gap 10
+                    align center
+                    justify spaceBetween
 
-        text "Kod, który czyta się jak specyfikacja produktu."
-          style h1
+                    text diag.code
+                      style badgeErr
 
-        text "Wcięcie jest składnią. Typ idzie po nazwie. Komentarze to dwa ukośniki. Trzy zasady, które modele AI mylą najczęściej."
-          style lead
-          max lines 4
+                    text "linia " + diag.line
+                      style caption
 
+                  if langMode is "both" or langMode is "pl"
+                    text diag.messagePl
+                      style body
+
+                  if langMode is "both" or langMode is "en"
+                    text diag.messageEn
+                      style bodyEn
+
+                  text "POPRAWKA"
+                    style overline
+
+                  if langMode is "both" or langMode is "pl"
+                    text diag.fixPl
+                      style caption
+
+                  if langMode is "both" or langMode is "en"
+                    text diag.fixEn
+                      style caption
+
+      card
         column
-          gap 24
-          list syntaxList()
-            empty
-              text "Brak przykładów."
-                style caption
-            item block
-              SyntaxWindow(block)
+          gap 10
 
-      column
-        padding 24
-        gap 20
+          text "JAK UCZYĆ SIĘ TEGO PODRĘCZNIKA"
+            style overline
 
-        text "Architektura"
-          style tag
+          text "Przejdź sekcje w kolejności: gramatyka, potem reguły, potem pułapki. Przy każdej regule przeczytaj przykład poprawny i błędny razem — dopiero różnica między nimi pokazuje regułę."
+            style body
 
-        text "Jeden front-end. Wiele backendów."
-          style h1
+          text "Walk the sections in order: grammar, then rules, then traps. For each rule read the correct and the wrong example together — the difference between them is what carries the rule."
+            style bodyEn
 
-        text "Kompilator nie tłumaczy AXCode bezpośrednio na Swift, Kotlin czy JavaScript. Tworzy neutralny graf aplikacji, a dopiero na jego podstawie generuje kod platform."
-          style lead
-          max lines 4
+          text "W sekcji kompilatora wklej własny kod. Kod błędu wskaże, która reguła została złamana, więc nie trzeba zgadywać."
+            style body
 
-        ArchitectureDiagram()
+      text "Autor: Axel G"
+        style overline
 
-        text "Dziesięć warstw tej implementacji"
-          style h2
+      text "https://www.instagram.com/axelgadomski"
+        style caption
 
-        column
-          gap 16
-          list layerList()
-            empty
-              text "Brak warstw."
-                style caption
-            item layer
-              LayerRow(layer)
+test "Gramatyka ma trzydzieści reguł"
+  given value loadGrammar()
+  when length(grammar)
+  then result is 30
 
-        text "Etapy rozwoju"
-          style h2
+test "Reguł języka jest dwadzieścia"
+  given value loadRules()
+  when length(rules)
+  then result is 20
 
-        grid
-          columns 2
-          gap 18
-          list stageList()
-            empty
-              text "Brak etapów."
-                style caption
-            item stage
-              StageCard(stage)
+test "Katalog błędów ma dwadzieścia pięć kodów"
+  given value loadErrors()
+  when length(errors)
+  then result is 25
 
-      column
-        padding 24
-        gap 20
+test "Pułapek jest piętnaście"
+  given value loadTraps()
+  when length(traps)
+  then result is 15
 
-        text "Specyfikacja"
-          style tag
-
-        text "Kody błędów, które uczą."
-          style h1
-
-        text "Każdy błąd ma identyfikator, kategorię, pozycję, wyjaśnienie i proponowaną poprawkę. Komunikat nie tylko przerywa budowanie — mówi, co zrobić."
-          style lead
-          max lines 4
-
-        column
-          gap 12
-          list errorList()
-            empty
-              text "Brak klas błędów."
-                style caption
-            item error
-              ErrorRow(error)
-
-        text "Przykład komunikatu"
-          style h2
-
-        card
-          column
-            gap 4
-            text "[AX7002] Przycisk ikonowy bez etykiety dostepnosci w ekranie Profile (linia 1841)."
-              style codeLine
-            text " "
-              style codeLine
-            text "Poprawka: Dodaj accessibility label \"opis akcji\"."
-              style codeLine
-            text " "
-              style codeLine
-            text "[AX6001] Magazyn apiKeys wyglada na przechowujacy sekrety, ale nie ma klasy secure ani encrypted."
-              style codeLine
-            text " "
-              style codeLine
-            text "Poprawka: Zmien na: store apiKeys secure"
-              style codeLine
-
-      column
-        padding 24
-        gap 20
-
-        text "Dla modeli AI"
-          style tag
-
-        text "Sześć pułapek, których nie da się zgadnąć."
-          style h1
-
-        text "Dokumentacja techniczna jest dołączona do kompilatora. Powiedz dowolnemu modelowi, żeby ją przeczytał, zanim zacznie pisać w AXCode."
-          style lead
-          max lines 4
-
-        grid
-          columns 2
-          gap 18
-          list pitfallList()
-            empty
-              text "Brak treści."
-                style caption
-            item pitfall
-              PitfallCard(pitfall)
-
-      column
-        padding 24
-        gap 20
-
-
-      column
-        padding 24
-        gap 20
-
-        text "Podejscie naukowe"
-          style tag
-
-        text "Metoda, hipotezy, pomiary i ograniczenia."
-          style h1
-
-        text "Strona opisuje jezyk nie tylko jako produkt, ale jako przedmiot analizy. Ponizej metoda badawcza, hipotezy z wynikami, zestaw pomiarow, jawnie wypisane ograniczenia oraz bibliografia."
-          style lead
-          max lines 4
-
-        text "Metoda badawcza"
-          style h2
-
-        column
-          gap 16
-          list methodList()
-            empty
-              text "Brak krokow metody."
-                style caption
-            item step
-              MethodStepRow(step)
-
-      column
-        padding 24
-        gap 20
-
-        text "Hipotezy"
-          style h2
-
-        column
-          gap 18
-          list hypothesisList()
-            empty
-              text "Brak hipotez."
-                style caption
-            item hypothesis
-              HypothesisCard(hypothesis)
-
-      column
-        padding 24
-        gap 20
-
-        text "Pomiary"
-          style h2
-
-        text "Wszystkie wartosci pochodza z rzeczywistych plikow projektu, nie z szacunkow."
-          style caption
-          max lines 3
-
-        column
-          gap 12
-          list measureList()
-            empty
-              text "Brak pomiarow."
-                style caption
-            item measure
-              MeasureRow(measure)
-
-      column
-        padding 24
-        gap 20
-
-        text "Ograniczenia"
-          style h2
-
-        text "Piec ograniczen wypisanych jawnie. Praca nie przedstawia jezyka jako rozwiazania bez wad."
-          style caption
-          max lines 3
-
-        grid
-          columns 2
-          gap 18
-          list limitationList()
-            empty
-              text "Brak ograniczen."
-                style caption
-            item limitation
-              LimitationCard(limitation)
-
-      column
-        padding 24
-        gap 20
-
-        text "Bibliografia"
-          style h2
-
-        column
-          gap 14
-          list citationList()
-            empty
-              text "Brak pozycji."
-                style caption
-            item citation
-              CitationRow(citation, citation.id)
-
-      column
-        padding 24
-        gap 20
-
-        text "Dokumenty do skopiowania"
-          style h2
-
-        text "Teksty gotowe do wklejenia na kompilator tego jezyka albo do dowolnego modelu AI, ktory ma pisac w AXCode. Kazdy dokument jest generowany z danych tej strony, wiec nie rozjedzie sie z trescia."
-          style lead
-          max lines 5
-
-        row
-          gap 12
-          align center
-          button "Skopiuj specyfikacje"
-            style buttonPrimary
-            accessibility label "Skopiuj specyfikacje jezyka do schowka"
-            when tapped
-              copySpec()
-          button "Skopiuj pelny raport"
-            style buttonSecondary
-            accessibility label "Skopiuj pelny raport do schowka"
-            when tapped
-              copyFullReport()
-
-        row
-          gap 12
-          align center
-          button "Skopiuj metode badawcza"
-            style buttonGhost
-            accessibility label "Skopiuj metode badawcza do schowka"
-            when tapped
-              copyMethod()
-          button "Skopiuj bibliografie"
-            style buttonGhost
-            accessibility label "Skopiuj bibliografie do schowka"
-            when tapped
-              copyCitations()
-
-        if length(clipboardText) > 0
-          card
-            column
-              gap 8
-              text "Skopiowano do schowka"
-                style subheading
-              text length(clipboardText) + " znakow gotowych do wklejenia."
-                style caption
-
-        text "Zawartosc dokumentow"
-          style subheading
-
-        card
-          column
-            gap 4
-            text "specyfikacja: jednostki programu, typy, klasy magazynow, zdarzenia, kontenery, elementy, reguly kompilatora, kody bledow"
-              style codeLine
-            text "metoda: szesc krokow z celem i artefaktem kazdego"
-              style codeLine
-            text "pomiary: dwanascie wartosci z probka zrodlowa"
-              style codeLine
-            text "raport pelny: wszystkie powyzsze w jednym tekscie"
-              style codeLine
-
-        text "AXCode"
-          style h2
-
-        text "Deklaratywny język aplikacji. Autor: Axel G."
-          style body
-
-        text "@axelgadomski"
-          style caption
-
-        row
-          gap 12
-          align center
-          button "Od początku"
-            style buttonGhost
-            accessibility label "Wróć do początku strony"
-            when tapped
-              goTo("Start")
-          button "GitHub"
-            style buttonGhost
-            accessibility label "Otwórz repozytorium AXCode"
-            when tapped
-              openUrl("https://github.com/axelgadomski420/AXCode")
-
-test "Lista możliwości ma cztery pozycje"
-  given value loadContent()
-  when length(featureList())
-  then result is 4
-
-test "Lista warstw ma dziesięć pozycji"
-  given value loadContent()
-  when length(layerList())
-  then result is 10
-
-test "Lista hipotez ma piec pozycji"
-  given value loadContent()
-  when length(hypothesisList())
-  then result is 5
-
-test "Lista pomiarow ma dwanascie pozycji"
-  given value loadContent()
-  when length(measureList())
-  then result is 12
-
-test "Dokument specyfikacji nie jest pusty"
-  given value loadContent()
-  when length(specDocument())
-  then result is not 0
-
-test "Pelny raport zawiera wszystkie sekcje"
-  given value loadContent()
-  when contains(fullReport(), "METODA BADAWCZA")
-  then result is true
-
-test "Przełączanie bloku kodu rozwija i zwija"
-  given value toggleBlock("s1")
-  when expandedBlock
-  then result is "s1"
-
-accessibility test "Strona AXCode"
-  open Start
+accessibility test "Podręcznik AXCode"
+  open Podrecznik
   expect all fields have labels
-  expect all images have alt
   expect all icon buttons have accessibility label
   expect contrast passes AA
+  expect screen reader announces title
