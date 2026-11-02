@@ -308,7 +308,23 @@ function tokenToNode(t) {
 
   const word = t.raw.trim().split(/\s+/)[0];
 
+  // wywołanie komponentu w drzewie: NavBar() albo MetricBox(metric)
+  const compCall = t.raw.trim().match(/^([A-Z][A-Za-z0-9_]*)\(([^)]*)\)\s*$/);
+  if (compCall) {
+    return { kind: "call", name: compCall[1], args: compCall[2], line: t.line, children: null };
+  }
+
   if (CONTAINERS.has(word)) {
+    // list ze ścieżką: "list block.lines"
+    if (word === "list") {
+      const m = t.raw.trim().match(/^list\s+(.+)$/);
+      return { kind: "container", name: "list", source: m ? m[1].trim() : "", line: t.line, children: [] };
+    }
+    // item z nazwą zmiennej: "item line"
+    if (word === "item") {
+      const m = t.raw.trim().match(/^item\s+([A-Za-z0-9_.]+)\s*$/);
+      return { kind: "container", name: "item", source: m ? m[1].trim() : "item", line: t.line, children: [] };
+    }
     return { kind: "container", name: word, line: t.line, children: [] };
   }
   if (word === "text") {
@@ -511,7 +527,7 @@ function ax(code, category, message, fix) {
 
 
 
-// -------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 // WARSTWA 4 — RUNTIME RENDERUJĄCY
 // Drzewo składniowe na drzewo dokumentu. Obsługuje kontenery, listy
 // z pustym stanem, komponenty z parametrami, warunki, zdarzenia,
@@ -724,12 +740,29 @@ function renderScreen(screen, runtime, argText) {
   return wrapper;
 }
 
-function renderTree(node, state, screen, local) {
+function renderTree(node, runtime, screen, local, params) {
   const frag = document.createElement("div");
   frag.className = "ax-tree";
 
-  for (const child of node.children) {
-    const rendered = renderNode(child, state, screen, local);
+  for (let i = 0; i < node.children.length; i++) {
+    const child = node.children[i];
+
+    if (child.kind === "if") {
+      const pass = Boolean(evalExpression(child.condition, createScope(runtime, local, null, null, params || new Map())));
+      const nextNode = node.children[i + 1];
+      const target = pass ? child : (nextNode && nextNode.kind === "else" ? nextNode : null);
+      if (target) {
+        for (const inner of target.children) {
+          const rendered = renderNode(inner, runtime, screen, local, params);
+          if (rendered) frag.appendChild(rendered);
+        }
+      }
+      if (!pass && nextNode && nextNode.kind === "else") i++;
+      continue;
+    }
+    if (child.kind === "else") continue;
+
+    const rendered = renderNode(child, runtime, screen, local, params);
     if (rendered) frag.appendChild(rendered);
   }
 
@@ -774,12 +807,37 @@ function renderContainer(node, state, screen, local) {
   applyAccessories(box, node, state, screen, local);
 
   if (node.name === "list") {
-    const items = local.get(node.source) || evalPath(node.source, state, local) || [];
-    if (!Array.isArray(items) || items.length === 0) {
-      const emptyNode = node.children.find(c => c.kind === "container" && c.name === "empty");
+    // źródło listy: nazwa magazynu, nazwa funkcji albo ścieżka "obiekt.pole"
+    let items = null;
+    const src = (node.source || "").trim();
+
+    const fromLocal = local ? local.get(src) : undefined;
+    if (Array.isArray(fromLocal)) items = fromLocal;
+
+    if (!items && state.global) {
+      const fromGlobal = state.global.get(src);
+      if (Array.isArray(fromGlobal)) items = fromGlobal;
+    }
+
+    if (!items && src.endsWith("()")) {
+      const fnName = src.slice(0, -2);
+      const value = invokeFunction(fnName, "", createScope(state, local, null, null, new Map()));
+      if (Array.isArray(value)) items = value;
+    }
+
+    if (!items && src.includes(".")) {
+      const value = resolvePath(src, createScope(state, local, null, null, new Map()));
+      if (Array.isArray(value)) items = value;
+    }
+
+    if (!items) items = [];
+
+    // gałąź empty
+    if (items.length === 0) {
+      const emptyNode = node.children.find(ch => ch.kind === "container" && ch.name === "empty");
       if (emptyNode) {
-        for (const c of emptyNode.children) {
-          const rendered = renderNode(c, state, screen, local);
+        for (const ch of emptyNode.children) {
+          const rendered = renderNode(ch, state, screen, local);
           if (rendered) box.appendChild(rendered);
         }
       } else {
@@ -787,13 +845,16 @@ function renderContainer(node, state, screen, local) {
       }
       return box;
     }
-    const itemNode = node.children.find(c => c.kind === "container" && c.name === "item");
+
+    // gałąź item
+    const itemNode = node.children.find(ch => ch.kind === "container" && ch.name === "item");
     if (itemNode) {
+      const varName = (itemNode.source || "item").trim();
       for (const entry of items) {
         const itemLocal = new Map(local);
-        itemLocal.set(itemVarName(itemNode), entry);
-        for (const c of itemNode.children) {
-          const rendered = renderNode(c, state, screen, itemLocal);
+        itemLocal.set(varName, entry);
+        for (const ch of itemNode.children) {
+          const rendered = renderNode(ch, state, screen, itemLocal);
           if (rendered) box.appendChild(rendered);
         }
       }
@@ -991,7 +1052,15 @@ function applyAccessories(element, node, state, screen, local) {
   if (pad) element.style.padding = pad.split(/\s+/).slice(1).join("px ") + "px";
 
   const cols = flat.find(t => t.startsWith("columns "));
-  if (cols) element.style.gridTemplateColumns = `repeat(${cols.split(/\s+/)[1]}, 1fr)`;
+  if (cols) {
+    const n = Number(cols.split(/\s+/)[1]) || 1;
+    element.style.gridTemplateColumns = "repeat(" + n + ", minmax(0, 1fr))";
+    element.style.display = "grid";
+  }
+  if (flat.includes("grid") && !cols) {
+    element.style.gridTemplateColumns = "repeat(2, minmax(0, 1fr))";
+    element.style.display = "grid";
+  }
 
   const align = flat.find(t => t.startsWith("align "));
   if (align) element.style.alignItems = align.split(/\s+/)[1] === "center" ? "center" : align.split(/\s+/)[1];
@@ -1100,8 +1169,7 @@ function interpolate(template, state, screen, local) {
   // "Tekst " + zmienna + " dalej"
   out = out.replace(/"([^"]*)"/g, (_, inner) => inner);
 
-  const parts = ou
-  t.split(/\s*\+\s*/);
+  const parts = out.split(/\s*\+\s*/);
   if (parts.length > 1) {
     return parts.map(p => {
       const v = evalPath(p.trim(), state, local);
@@ -1650,8 +1718,7 @@ function createApiLayer(runtime) {
             if (typeof fetch === "function" && /^https?:/.test(url)) {
               const headers = { "content-type": "application/json" };
               if ((api.config.auth || "").includes("bearer")) headers.authorization = "Bearer <token>";
-              const response = await 
-                fetch(url, {
+              const response = await fetch(url, {
                 method,
                 headers,
                 signal: controller ? controller.signal : undefined,
